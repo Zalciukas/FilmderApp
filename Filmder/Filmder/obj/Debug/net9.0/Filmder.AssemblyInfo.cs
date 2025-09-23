@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Filmder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca60c8d966e9a4d9b1fe9b70bbbd48a519b70ef6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4efcf43e4f3437370bde3b64d036156644e025a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("Filmder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Filmder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
