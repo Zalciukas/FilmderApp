@@ -38,9 +38,11 @@ namespace Filmder.Models
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
+        /*  TODO
         // Navigation properties for many-to-many relationships
         public ICollection<UserMovieLike> UserLikes { get; set; } = new List<UserMovieLike>();
         public ICollection<UserMovieDislike> UserDislikes { get; set; } = new List<UserMovieDislike>();
         public ICollection<LobbyMovie> LobbyMovies { get; set; } = new List<LobbyMovie>();
+        */
     }
 }
