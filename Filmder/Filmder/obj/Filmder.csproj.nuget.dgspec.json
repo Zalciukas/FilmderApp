@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj": {}
+    "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {}
   },
   "projects": {
-    "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj": {
+    "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj",
+        "projectUniqueName": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
         "projectName": "Filmder",
-        "projectPath": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj",
-        "packagesPath": "C:\\Users\\Ugnius_PC\\.nuget\\packages\\",
-        "outputPath": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\obj\\",
+        "projectPath": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
+        "packagesPath": "/home/domcekebabas/.nuget/packages/",
+        "outputPath": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Ugnius_PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/domcekebabas/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -86,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
