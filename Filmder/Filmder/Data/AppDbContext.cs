@@ -1,15 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Filmder.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Filmder.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
 {
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<Movie> Movies { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=filmder.db");
-    }
+   
 }

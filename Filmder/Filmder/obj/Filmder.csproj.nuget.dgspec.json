@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {}
+    "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {}
   },
   "projects": {
-    "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {
+    "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
+        "projectUniqueName": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
         "projectName": "Filmder",
-        "projectPath": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
-        "packagesPath": "/home/domcekebabas/.nuget/packages/",
-        "outputPath": "/home/domcekebabas/psi-2025-grupinis/Filmder/Filmder/obj/",
+        "projectPath": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
+        "packagesPath": "/Users/domasbarauskas/.nuget/packages/",
+        "outputPath": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/domcekebabas/.nuget/NuGet/NuGet.Config"
+          "/Users/domasbarauskas/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,12 +38,20 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.9, )"
@@ -65,6 +73,10 @@
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.14.0, )"
             }
           },
           "imports": [
@@ -86,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
