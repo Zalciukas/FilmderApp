@@ -25,22 +25,39 @@ public class GroupController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return Unauthorized();
+
         var group = new Group
         {
             Name = dto.Name,
             OwnerId = userId
         };
-
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null) return Unauthorized();
-
+        
         group.Members.Add(user);
+
+        // Add to group by email
+        if (dto.FriendEmails != null && dto.FriendEmails.Any())
+        {
+            var friends = await _context.Users
+                .Where(u => dto.FriendEmails.Contains(u.Email))
+                .ToListAsync();
+
+            foreach (var friend in friends)
+            {
+                if (!group.Members.Any(m => m.Id == friend.Id))
+                {
+                    group.Members.Add(friend);
+                }
+            }
+        }
 
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
 
         return Ok(new { group.Id, group.Name, group.OwnerId });
     }
+
 
     [HttpGet("mine")]
     public async Task<IActionResult> GetMyGroups()

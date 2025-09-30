@@ -319,3 +319,14 @@
 /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/obj/Debug/net9.0/Filmder.pdb
 /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/obj/Debug/net9.0/Filmder.genruntimeconfig.cache
 /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/obj/Debug/net9.0/ref/Filmder.dll
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.csproj.AssemblyReference.cache
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\rpswa.dswa.cache.json
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.GeneratedMSBuildEditorConfig.editorconfig
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.AssemblyInfoInputs.cache
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.AssemblyInfo.cs
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.csproj.CoreCompileInputs.cache
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.MvcApplicationPartsAssemblyInfo.cs
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.MvcApplicationPartsAssemblyInfo.cache
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.dll
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\refint\Filmder.dll
+\\wsl.localhost\Ubuntu\home\domcekebabas\psi-2025-grupinis\Filmder\Filmder\obj\Debug\net9.0\Filmder.pdb
