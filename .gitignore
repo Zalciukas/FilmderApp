@@ -1,0 +1,45 @@
+﻿# Build results
+bin/
+obj/
+out/
+
+# VS / VSCode
+.vscode/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Dependency folders
+node_modules/
+packages/
+
+# EF Core / SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# Secrets / configs
+appsettings.Development.json
+appsettings.Local.json
+
+# Publish outputs
+*.publish/
+*.Publish.xml
+
+# Resharper / Rider
+.idea/
+*.DotSettings.user
+
+# Others
+*.tmp
+*.bak
+*.swp
