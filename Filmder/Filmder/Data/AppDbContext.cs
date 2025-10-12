@@ -11,4 +11,5 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 }
