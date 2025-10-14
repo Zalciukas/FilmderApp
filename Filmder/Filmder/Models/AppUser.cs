@@ -12,7 +12,7 @@ namespace Filmder.Models
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
-        public ICollection<Group> Groups { get; set; } = new List<Group>();
+       // public ICollection<Group> Groups { get; set; } = new List<Group>();
         /*  TODO
         // Navigation properties
         public ICollection<UserMovieLike> LikedMovies { get; set; } = new List<UserMovieLike>();

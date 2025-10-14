@@ -25,18 +25,30 @@ public class GroupController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
+        // Validate creator
         var user = await _context.Users.FindAsync(userId);
         if (user == null) return Unauthorized();
 
+        // Create new group
         var group = new Group
         {
             Name = dto.Name,
             OwnerId = userId
         };
-        
-        group.Members.Add(user);
 
-        // Add to group by email
+        _context.Groups.Add(group);
+        await _context.SaveChangesAsync(); 
+
+        var groupMembers = new List<GroupMember>
+        {
+            new GroupMember
+            {
+                UserId = userId,
+                GroupId = group.Id,
+                JoinedAt = DateTime.UtcNow
+            }
+        };
+
         if (dto.FriendEmails != null && dto.FriendEmails.Any())
         {
             var friends = await _context.Users
@@ -45,19 +57,29 @@ public class GroupController : ControllerBase
 
             foreach (var friend in friends)
             {
-                if (!group.Members.Any(m => m.Id == friend.Id))
+                if (friend.Id != userId)
                 {
-                    group.Members.Add(friend);
+                    groupMembers.Add(new GroupMember
+                    {
+                        UserId = friend.Id,
+                        GroupId = group.Id,
+                        JoinedAt = DateTime.UtcNow
+                    });
                 }
             }
         }
 
-        _context.Groups.Add(group);
+        _context.GroupMembers.AddRange(groupMembers);
         await _context.SaveChangesAsync();
 
-        return Ok(new { group.Id, group.Name, group.OwnerId });
-    }
+        var groups = await _context.Groups
+            .Where(g => _context.GroupMembers
+                .Any(m => m.GroupId == g.Id && m.UserId == userId))
+            .Select(g => new { g.Id, g.Name, g.OwnerId })
+            .ToListAsync();
 
+        return Ok(groups);
+    }
 
     [HttpGet("mine")]
     public async Task<IActionResult> GetMyGroups()
@@ -65,7 +87,8 @@ public class GroupController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         var groups = await _context.Groups
-            .Where(g => g.Members.Any(m => m.Id == userId))
+            .Where(g => _context.GroupMembers
+                .Any(m => m.GroupId == g.Id && m.UserId == userId))
             .Select(g => new { g.Id, g.Name, g.OwnerId })
             .ToListAsync();
 
