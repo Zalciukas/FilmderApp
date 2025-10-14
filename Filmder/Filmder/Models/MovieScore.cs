@@ -11,13 +11,13 @@ public class MovieScore
     [ForeignKey("Movie")]
     public int MovieId { get; set; }
 
-    public Movie Movie { get; set; }
+    public Movie? Movie { get; set; }
 
     [Required]
     [ForeignKey("Game")]
     public int GameId { get; set; }
 
-    public Game Game { get; set; }
+    public Game? Game { get; set; }
     
     public int MovieScoreValue { get; set; }
 }

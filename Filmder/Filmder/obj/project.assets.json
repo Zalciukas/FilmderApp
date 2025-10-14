@@ -3662,19 +3662,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ugnius_PC\\.nuget\\packages\\": {}
+    "/Users/domasbarauskas/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj",
+      "projectUniqueName": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
       "projectName": "Filmder",
-      "projectPath": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\Filmder.csproj",
-      "packagesPath": "C:\\Users\\Ugnius_PC\\.nuget\\packages\\",
-      "outputPath": "\\\\wsl.localhost\\Ubuntu\\home\\domcekebabas\\psi-2025-grupinis\\Filmder\\Filmder\\obj\\",
+      "projectPath": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/Filmder.csproj",
+      "packagesPath": "/Users/domasbarauskas/.nuget/packages/",
+      "outputPath": "/Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Ugnius_PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/domasbarauskas/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -3758,7 +3758,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
