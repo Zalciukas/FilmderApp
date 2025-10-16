@@ -1,32 +1,40 @@
 using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
+using Filmder.Signal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Filmder.Controllers;
 [ApiController]
 public class GameController : ControllerBase
 {
-    private AppDbContext _dbContext;
-
-    public GameController(AppDbContext dbContext)
+    private readonly AppDbContext _dbContext;
+    private readonly IHubContext<ChatHub> _hubContext;
+    public GameController(AppDbContext dbContext, IHubContext<ChatHub> hubContext)
     {
         _dbContext = dbContext;
+        _hubContext = hubContext;
     }
 
     [HttpPost("/createAgame")]
     public ActionResult<Game> CreateAGame(CreateGameDto createGameDto)
     {
+
+        var users =  _dbContext.Users.Where(usr => createGameDto.UserEmails.Contains(usr.Email)).ToList();
         var game = new Game
         {
             Name = createGameDto.name,
-            Users = createGameDto.Users,
+            Users = users,
+            GroupId = createGameDto.groupId,
             Movies = createGameDto.Movies,
             MovieScores = createGameDto.MovieScores
         };
 
-        return game;
+        _dbContext.Games.Add(game);
+        _dbContext.SaveChanges();
+        return Ok(game);
 
     }
     
@@ -44,40 +52,49 @@ public class GameController : ControllerBase
         var movieScore = game.MovieScores.FirstOrDefault(ms => ms.MovieId == voteDto.MovieId);
         if (movieScore == null)
         {
-
-            var newMovieScore = new MovieScore
+            movieScore = new MovieScore
             {
                 MovieId = voteDto.MovieId,
                 GameId = voteDto.GameId,
                 MovieScoreValue = voteDto.Score
             };
-            game.MovieScores.Add(newMovieScore);
-            await _dbContext.SaveChangesAsync();
+            game.MovieScores.Add(movieScore);
+        }
+        else
+        {
+            movieScore.MovieScoreValue += voteDto.Score;
         }
 
-        movieScore.MovieScoreValue = +voteDto.Score;
+        await _dbContext.SaveChangesAsync();
         
         
         return Ok();
 
     }
     
-    
-    
     [HttpGet("/getMoviesBy")]
-    public async Task<ActionResult<List<Movie>>> getMoviesByCriteria(GetMoviesByCriteriaDto getMoviesByCriteriaDto)
-        {
-            var movies = _dbContext.Movies.AsQueryable();
-            
-            
-            if(getMoviesByCriteriaDto.LongestDurationMinutes !=null){ movies.Where(mv => mv.Duration <= getMoviesByCriteriaDto.LongestDurationMinutes); }
-            if (getMoviesByCriteriaDto.ReleaseDate != null){ movies.Where(mv =>mv.ReleaseYear >= getMoviesByCriteriaDto.ReleaseDate); }
-            if (getMoviesByCriteriaDto.LongestDurationMinutes != null){ movies.Where(mv => mv.Genre == getMoviesByCriteriaDto.Genre); }
-            
-           var result = await movies.Take(getMoviesByCriteriaDto.MovieCount).ToListAsync();
-            
-            return result;
-        }
+    public async Task<ActionResult<List<Movie>>> GetMoviesByCriteria(
+        [FromQuery] string? genre,
+        [FromQuery] int? releaseDate,
+        [FromQuery] int? longestDurationMinutes,
+        [FromQuery] int movieCount = 10)
+    {
+        var movies = _dbContext.Movies.AsQueryable();
+
+        if (longestDurationMinutes.HasValue)
+            movies = movies.Where(mv => mv.Duration <= longestDurationMinutes.Value);
+
+        if (releaseDate.HasValue)
+            movies = movies.Where(mv => mv.ReleaseYear >= releaseDate.Value);
+
+        if (!string.IsNullOrEmpty(genre))
+            movies = movies.Where(mv => mv.Genre == genre);
+
+        var result = await movies.Take(movieCount).ToListAsync();
+
+        return Ok(result);
+    }
+
     
     
      [HttpGet("/getResults{gameId}")]
@@ -102,6 +119,39 @@ public class GameController : ControllerBase
             .ToList();
 
         return topMovies;
+    }
+    
+    [HttpPost("/endGame/{gameId}")]
+    public async Task<ActionResult> EndGame(int gameId)
+    {
+        var game = await _dbContext.Games.FindAsync(gameId);
+        if (game == null)
+            return NotFound();
+
+        game.IsActive = false;
+        await _dbContext.SaveChangesAsync();
+
+        await _hubContext.Clients.Group(gameId.ToString())
+            .SendAsync("gameEnded", $"🎬 Game {game.Name} has ended! View results now.");
+
+        return Ok("Game ended successfully.");
+    }
+    
+    [HttpGet("getActiveGame/{groupId}")]
+    public async Task<ActionResult<List<Game>>> GetActiveGames(int groupId)
+    {
+        var game = await _dbContext.Games
+            .Include(g => g.Users)
+            .Where(mv => mv.IsActive && mv.GroupId == groupId)
+            .ToListAsync();
+        
+        if (game == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(game);
+        
     }
     
     
