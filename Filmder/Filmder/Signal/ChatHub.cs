@@ -19,4 +19,9 @@ public class ChatHub : Hub
         await Clients.Group(groupId.ToString())
             .SendAsync("getMessage", userName, message);
     }
+    public async Task gameCreated(string groupId, string creatorName)
+    {
+        await Clients.Group(groupId)
+            .SendAsync("gameCreated", $"{creatorName} created a new movie game!");
+    }
 }
