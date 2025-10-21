@@ -27,13 +27,7 @@ public class AccountController(UserManager<AppUser> userManager, SignInManager<A
            return BadRequest(result.Errors);
        }
 
-       return new UserDto
-       {
-           Id = user.Id,
-           Email = user.Email,
-           Token = tokenService.CreateToken(user)
-       };
-
+       return new UserDto(user.Id, user.Email!, tokenService.CreateToken(user));
 
     }
 
@@ -49,12 +43,8 @@ public class AccountController(UserManager<AppUser> userManager, SignInManager<A
         var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
         if (!result.Succeeded) return Unauthorized("Invalid password");
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Email = user.Email,
-            Token = tokenService.CreateToken(user)
-        };
+        return new UserDto(user.Id, user.Email!, tokenService.CreateToken(user));
+        
     }
     
 }
