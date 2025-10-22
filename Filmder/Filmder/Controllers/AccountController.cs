@@ -1,9 +1,7 @@
 using Filmder.DTOs;
 using Filmder.Models;
 using Filmder.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Filmder.Controllers;

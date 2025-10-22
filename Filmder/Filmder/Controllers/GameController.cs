@@ -1,6 +1,7 @@
 using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
+using Filmder.Extensions;
 using Filmder.Signal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -88,7 +89,12 @@ public class GameController : ControllerBase
             movies = movies.Where(mv => mv.ReleaseYear >= releaseDate.Value);
 
         if (!string.IsNullOrEmpty(genre))
-            movies = movies.Where(mv => mv.Genre == genre);
+        {
+            if (MovieGenreParsingExtensions.TryParseGenre(genre, out var parsedGenre))
+                movies = movies.Where(mv => mv.Genre == parsedGenre);
+            else
+                return BadRequest("Invalid genre");
+        }
 
         var result = await movies.Take(movieCount).ToListAsync();
 
