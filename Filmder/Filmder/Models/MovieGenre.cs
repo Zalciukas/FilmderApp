@@ -9,6 +9,7 @@ public enum MovieGenre
 	SciFi,
 	Romance,
 	Thriller,
+	Crime,
 	Animation,
 	Documentary,
 	Fantasy

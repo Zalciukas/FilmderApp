@@ -57,6 +57,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<MovieImportService>();
+
 
 builder.Services.AddSignalR();
 
