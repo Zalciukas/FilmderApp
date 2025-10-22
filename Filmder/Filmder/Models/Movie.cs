@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Filmder.Models
 {
-    public class Movie
+    public class Movie : IComparable<Movie>
     {
         public int Id { get; set; }
 
@@ -37,5 +37,18 @@ namespace Filmder.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public MovieDuration GetFormattedDuration() => new MovieDuration(Duration);
+        
+        public int CompareTo(Movie? other)
+        {
+            if (other == null) return 1;
+            
+            
+            int ratingComparison = other.Rating.CompareTo(this.Rating);
+            if (ratingComparison != 0) return ratingComparison;
+
+            // if ratings are equal, compare by release date
+            return other.ReleaseYear.CompareTo(this.ReleaseYear);
+        }
+        
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Filmder.Extensions;
+using Filmder.Services;
 
 namespace Filmder.Controllers;
 
@@ -13,11 +14,12 @@ namespace Filmder.Controllers;
 public class MovieController : ControllerBase
 {
     private readonly AppDbContext _context;
-
+    private readonly MovieImportService _importService;
     
-    public MovieController(AppDbContext context)
+    public MovieController(AppDbContext context, MovieImportService importService)
     {
         _context = context;
+        _importService = importService;
     }
     
     [HttpGet]
@@ -154,4 +156,14 @@ public class MovieController : ControllerBase
 
         return NoContent();
     }
+    
+    
+    [HttpPost("import")]
+    public async Task<IActionResult> ImportMovies()
+    {
+        int added = await _importService.ImportMoviesFromFileAsync(filePath: "movies.json"); 
+        return Ok(new { message = $"{added} movies imported successfully." });
+    }
+
+
 }
