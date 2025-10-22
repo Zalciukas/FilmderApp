@@ -4,6 +4,7 @@ using Filmder.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Filmder.Extensions;
 
 namespace Filmder.Controllers;
 
@@ -70,8 +71,11 @@ public class MovieController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<List<Movie>>> GetMoviesByGenre(string genre, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
+        if (!MovieGenreParsingExtensions.TryParseGenre(genre, out var parsed))
+            return BadRequest("Invalid genre");
+
         var movies = await _context.Movies
-            .Where(m => m.Genre.ToLower() == genre.ToLower())
+            .Where(m => m.Genre == parsed)
             .OrderByDescending(m => m.Rating)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -86,10 +90,13 @@ public class MovieController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Movie>> CreateMovie([FromBody] CreateMovieDto dto)
     {
+        if (!MovieGenreParsingExtensions.TryParseGenre(dto.Genre, out var createParsed))
+            return BadRequest("Invalid genre");
+
         var movie = new Movie
         {
             Name = dto.Name,
-            Genre = dto.Genre,
+            Genre = createParsed,
             Description = dto.Description,
             ReleaseYear = dto.ReleaseYear,
             Rating = dto.Rating,
@@ -116,7 +123,9 @@ public class MovieController : ControllerBase
             return NotFound();
 
         movie.Name = dto.Name;
-        movie.Genre = dto.Genre;
+        if (!MovieGenreParsingExtensions.TryParseGenre(dto.Genre, out var updateParsed))
+            return BadRequest("Invalid genre");
+        movie.Genre = updateParsed;
         movie.Description = dto.Description;
         movie.ReleaseYear = dto.ReleaseYear;
         movie.Rating = dto.Rating;

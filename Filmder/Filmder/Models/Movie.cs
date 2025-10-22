@@ -11,9 +11,8 @@ namespace Filmder.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(100)]
-        public string Genre { get; set; } = string.Empty;
-
+        public MovieGenre Genre { get; set; }
+        
         [StringLength(1000)]
         public string Description { get; set; } = string.Empty;
 
