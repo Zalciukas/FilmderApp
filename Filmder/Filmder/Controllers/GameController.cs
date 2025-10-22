@@ -119,10 +119,11 @@ public class GameController : ControllerBase
         
 
         var topMovies = game.MovieScores
-            .OrderByDescending(ms => ms.MovieScoreValue)
             .Take(5) //reikia pakeisti
             .Select(ms => game.Movies.FirstOrDefault(m => m.Id == ms.MovieId))
             .ToList();
+        
+        topMovies.Sort();
 
         return topMovies;
     }
