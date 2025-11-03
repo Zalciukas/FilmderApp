@@ -161,9 +161,14 @@ public class MovieController : ControllerBase
     [HttpPost("import")]
     public async Task<IActionResult> ImportMovies()
     {
-        int added = await _importService.ImportMoviesFromFileAsync(filePath: "movies.json"); 
+        int added = await _importService.ImportMoviesFromFileAsync(filePath: "movies.json");
+
+        if (added == 0)
+            return BadRequest(new { message = "No movies were imported. The file may be missing, empty, or contain only duplicates." });
+
         return Ok(new { message = $"{added} movies imported successfully." });
     }
+
 
 
 }
