@@ -4,7 +4,7 @@ namespace Filmder.Extensions;
 
 public static class MovieGenreParsingExtensions
 {
-    public static bool TryParseGenre(string? value, out MovieGenre genre)
+    public static bool TryParseGenre(this string? value, out MovieGenre genre)
     {
         genre = default;
         if (string.IsNullOrWhiteSpace(value)) return false;
