@@ -1,11 +1,8 @@
-﻿using Filmder.Data;
-using Filmder.DTOs;
+﻿using Filmder.DTOs;
 using Filmder.Models;
+using Filmder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Filmder.Extensions;
-using Filmder.Services;
 
 namespace Filmder.Controllers;
 
@@ -16,7 +13,7 @@ public class MovieController : ControllerBase
     private readonly IMovieService _movieService;
     private readonly MovieImportService _importService;
     
-    public MovieController(AppDbContext context, MovieImportService importService, IMovieService movieService)
+    public MovieController(MovieImportService importService, IMovieService movieService)
     {
         _movieService = movieService;
         _importService = importService;

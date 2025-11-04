@@ -1,12 +1,9 @@
-using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
-using Filmder.Extensions;
 using Filmder.Signal;
 using Filmder.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Filmder.Controllers;
 [ApiController]
@@ -14,7 +11,7 @@ public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;
     private readonly IHubContext<ChatHub> _hubContext;
-    public GameController(AppDbContext dbContext, IHubContext<ChatHub> hubContext, IGameService gameService)
+    public GameController(IHubContext<ChatHub> hubContext, IGameService gameService)
     {
         _hubContext = hubContext;
         _gameService = gameService;

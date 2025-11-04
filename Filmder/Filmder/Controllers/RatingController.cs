@@ -1,11 +1,8 @@
-using Filmder.Data;
 using Filmder.DTOs;
-using Filmder.Models;
+using Filmder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Filmder.Services;
 
 namespace Filmder.Controllers;
 
@@ -16,7 +13,7 @@ public class RatingController : ControllerBase
 {
     private readonly IRatingService _ratingService;
 
-    public RatingController(AppDbContext context, IRatingService ratingService)
+    public RatingController(IRatingService ratingService)
     {
         _ratingService = ratingService;
     }

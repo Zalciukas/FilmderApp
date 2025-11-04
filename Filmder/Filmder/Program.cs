@@ -2,7 +2,6 @@ using System.Text;
 using Filmder.Data;
 using Filmder.Models;
 using Filmder.Services;
-using Filmder.Repositories;
 using Filmder.Signal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -59,10 +58,6 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<MovieImportService>();
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGroupService, GroupService>();

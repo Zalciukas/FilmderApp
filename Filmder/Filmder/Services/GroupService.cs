@@ -1,14 +1,15 @@
+using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
-using Filmder.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Filmder.Services;
 
-public class GroupService(IGroupRepository groups) : IGroupService
+public class GroupService(AppDbContext context) : IGroupService
 {
     public async Task<List<object>> CreateGroupAsync(string currentUserId, CreateGroupDto dto)
     {
-        var user = await groups.FindUserByIdAsync(currentUserId);
+        var user = await context.Users.FindAsync(currentUserId);
         if (user == null) throw new UnauthorizedAccessException();
 
         var group = new Group
@@ -17,8 +18,8 @@ public class GroupService(IGroupRepository groups) : IGroupService
             OwnerId = currentUserId
         };
 
-        await groups.AddGroupAsync(group);
-        await groups.SaveChangesAsync();
+        await context.Groups.AddAsync(group);
+        await context.SaveChangesAsync();
 
         var groupMembers = new List<GroupMember>
         {
@@ -32,7 +33,10 @@ public class GroupService(IGroupRepository groups) : IGroupService
 
         if (dto.FriendEmails != null && dto.FriendEmails.Any())
         {
-            var friends = await groups.FindUsersByEmailsAsync(dto.FriendEmails);
+            var friends = await context.Users
+                .Where(u => dto.FriendEmails.Contains(u.Email!))
+                .ToListAsync();
+            
             foreach (var friend in friends)
             {
                 if (friend.Id != currentUserId)
@@ -47,15 +51,24 @@ public class GroupService(IGroupRepository groups) : IGroupService
             }
         }
 
-        await groups.AddGroupMembersAsync(groupMembers);
-        await groups.SaveChangesAsync();
+        context.GroupMembers.AddRange(groupMembers);
+        await context.SaveChangesAsync();
 
-        return await groups.GetUserGroupsProjectionAsync(currentUserId);
+        return await GetUserGroupsProjectionAsync(currentUserId);
     }
 
-    public Task<List<object>> GetMyGroupsAsync(string currentUserId)
+    public async Task<List<object>> GetMyGroupsAsync(string currentUserId)
     {
-        return groups.GetUserGroupsProjectionAsync(currentUserId);
+        return await GetUserGroupsProjectionAsync(currentUserId);
+    }
+
+    private Task<List<object>> GetUserGroupsProjectionAsync(string userId)
+    {
+        return context.Groups
+            .Where(g => context.GroupMembers
+                .Any(m => m.GroupId == g.Id && m.UserId == userId))
+            .Select(g => new { g.Id, g.Name, g.OwnerId } as object)
+            .ToListAsync();
     }
 }
 

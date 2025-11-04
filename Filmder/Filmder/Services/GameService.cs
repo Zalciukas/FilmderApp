@@ -1,14 +1,19 @@
+using Filmder.Data;
 using Filmder.DTOs;
+using Filmder.Extensions;
 using Filmder.Models;
-using Filmder.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Filmder.Services;
 
-public class GameService(IGameRepository games) : IGameService
+public class GameService(AppDbContext context) : IGameService
 {
     public async Task<Game> CreateAsync(CreateGameDto dto)
     {
-        var users = await games.GetUsersByEmailsAsync(dto.UserEmails);
+        var users = await context.Users
+            .Where(usr => dto.UserEmails.Contains(usr.Email!))
+            .ToListAsync();
+        
         var game = new Game
         {
             Name = dto.name,
@@ -17,14 +22,20 @@ public class GameService(IGameRepository games) : IGameService
             Movies = dto.Movies,
             MovieScores = dto.MovieScores
         };
-        await games.AddAsync(game);
-        await games.SaveChangesAsync();
+        
+        await context.Games.AddAsync(game);
+        await context.SaveChangesAsync();
         return game;
     }
 
     public async Task VoteAsync(VoteDto voteDto)
     {
-        var game = await games.GetWithScoresAsync(voteDto.GameId) ?? throw new ArgumentException("Bad game");
+        var game = await context.Games
+            .Include(g => g.MovieScores)
+            .FirstOrDefaultAsync(g => g.Id == voteDto.GameId);
+        
+        if (game == null) throw new ArgumentException("Bad game");
+        
         var movieScore = game.MovieScores.FirstOrDefault(ms => ms.MovieId == voteDto.MovieId);
         if (movieScore == null)
         {
@@ -40,39 +51,67 @@ public class GameService(IGameRepository games) : IGameService
         {
             movieScore.MovieScoreValue += voteDto.Score;
         }
-        await games.SaveChangesAsync();
+        
+        await context.SaveChangesAsync();
     }
 
-    public Task<List<Movie>> GetMoviesByCriteriaAsync(string? genre, int? releaseDate, int? longestDurationMinutes, int movieCount)
+    public async Task<List<Movie>> GetMoviesByCriteriaAsync(string? genre, int? releaseDate, int? longestDurationMinutes, int movieCount)
     {
-        return games.GetMoviesByCriteriaAsync(genre, releaseDate, longestDurationMinutes, movieCount);
+        var movies = context.Movies.AsQueryable();
+
+        if (longestDurationMinutes.HasValue)
+            movies = movies.Where(mv => mv.Duration <= longestDurationMinutes.Value);
+
+        if (releaseDate.HasValue)
+            movies = movies.Where(mv => mv.ReleaseYear >= releaseDate.Value);
+
+        if (!string.IsNullOrEmpty(genre))
+        {
+            if (MovieGenreParsingExtensions.TryParseGenre(genre, out var parsedGenre))
+                movies = movies.Where(mv => mv.Genre == parsedGenre);
+            else
+                throw new ArgumentException("Invalid genre");
+        }
+
+        return await movies.Take(movieCount).ToListAsync();
     }
 
     public async Task<List<Movie>> GetResultsAsync(int gameId)
     {
-        var game = await games.FindByIdAsync(gameId) ?? throw new ArgumentException("Bad game");
+        var game = await context.Games
+            .Include(g => g.MovieScores)
+            .Include(g => g.Movies)
+            .FirstOrDefaultAsync(g => g.Id == gameId);
+        
+        if (game == null) throw new ArgumentException("Bad game");
+        
         var topMovies = game.MovieScores
             .Take(5)
             .Select(ms => game.Movies.FirstOrDefault(m => m.Id == ms.MovieId))
             .Where(m => m != null)
             .Cast<Movie>()
             .ToList();
+        
         topMovies.Sort();
         return topMovies;
     }
 
     public async Task<bool> EndGameAsync(int gameId)
     {
-        var game = await games.FindByIdAsync(gameId);
+        var game = await context.Games.FindAsync(gameId);
         if (game == null) return false;
+        
         game.IsActive = false;
-        await games.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return true;
     }
 
-    public Task<List<Game>> GetActiveGamesAsync(int groupId)
+    public async Task<List<Game>> GetActiveGamesAsync(int groupId)
     {
-        return games.GetActiveByGroupAsync(groupId);
+        return await context.Games
+            .Include(g => g.Users)
+            .Where(mv => mv.IsActive && mv.GroupId == groupId)
+            .ToListAsync();
     }
 }
 

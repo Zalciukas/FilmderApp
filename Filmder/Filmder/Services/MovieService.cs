@@ -1,23 +1,47 @@
+using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Extensions;
 using Filmder.Models;
-using Filmder.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Filmder.Services;
 
-public class MovieService(IMovieRepository movies) : IMovieService
+public class MovieService(AppDbContext context) : IMovieService
 {
-    public Task<List<Movie>> GetAllAsync(int page, int pageSize) => movies.GetPagedAsync(page, pageSize);
+    public async Task<List<Movie>> GetAllAsync(int page, int pageSize)
+    {
+        return await context.Movies
+            .OrderByDescending(m => m.Rating)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
-    public Task<Movie?> GetByIdAsync(int id) => movies.GetByIdAsync(id);
+    public async Task<Movie?> GetByIdAsync(int id)
+    {
+        return await context.Movies.FindAsync(id);
+    }
 
-    public Task<List<Movie>> SearchAsync(string query) => movies.SearchAsync(query);
+    public async Task<List<Movie>> SearchAsync(string query)
+    {
+        return await context.Movies
+            .Where(m => m.Name.Contains(query) || m.Director.Contains(query) || m.Cast.Contains(query))
+            .OrderByDescending(m => m.Rating)
+            .Take(50)
+            .ToListAsync();
+    }
 
     public async Task<List<Movie>> GetByGenreAsync(string genre, int page, int pageSize)
     {
         if (!MovieGenreParsingExtensions.TryParseGenre(genre, out var parsed))
             throw new ArgumentException("Invalid genre");
-        return await movies.GetByGenreAsync(parsed, page, pageSize);
+        
+        return await context.Movies
+            .Where(m => m.Genre == parsed)
+            .OrderByDescending(m => m.Rating)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 
     public async Task<Movie> CreateAsync(CreateMovieDto dto)
@@ -39,15 +63,16 @@ public class MovieService(IMovieRepository movies) : IMovieService
             Cast = dto.Cast
         };
 
-        await movies.AddAsync(movie);
-        await movies.SaveChangesAsync();
+        await context.Movies.AddAsync(movie);
+        await context.SaveChangesAsync();
         return movie;
     }
 
     public async Task<bool> UpdateAsync(int id, CreateMovieDto dto)
     {
-        var existing = await movies.GetByIdAsync(id);
+        var existing = await context.Movies.FindAsync(id);
         if (existing == null) return false;
+        
         if (!MovieGenreParsingExtensions.TryParseGenre(dto.Genre, out var updateParsed))
             throw new ArgumentException("Invalid genre");
 
@@ -62,16 +87,17 @@ public class MovieService(IMovieRepository movies) : IMovieService
         existing.Director = dto.Director;
         existing.Cast = dto.Cast;
 
-        await movies.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var existing = await movies.GetByIdAsync(id);
+        var existing = await context.Movies.FindAsync(id);
         if (existing == null) return false;
-        await movies.RemoveAsync(existing);
-        await movies.SaveChangesAsync();
+        
+        context.Movies.Remove(existing);
+        await context.SaveChangesAsync();
         return true;
     }
 }
