@@ -1,7 +1,9 @@
+using Filmder.Data;
 using Filmder.DTOs;
-using Filmder.Services;
+using Filmder.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Filmder.Controllers;
@@ -11,11 +13,11 @@ namespace Filmder.Controllers;
 [Authorize]
 public class RatingController : ControllerBase
 {
-    private readonly IRatingService _ratingService;
+    private readonly AppDbContext _context;
 
-    public RatingController(IRatingService ratingService)
+    public RatingController(AppDbContext context)
     {
-        _ratingService = ratingService;
+        _context = context;
     }
 
     [HttpPost("rate")]
@@ -23,22 +25,53 @@ public class RatingController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        try
+        var movie = await _context.Movies.FindAsync(dto.MovieId);
+        if (movie == null) return NotFound("Movie not found");
+
+        var existingRating = await _context.Ratings
+            .FirstOrDefaultAsync(r => r.UserId == userId && r.MovieId == dto.MovieId);
+
+        if (existingRating != null)
         {
-            await _ratingService.SaveRatingAsync(userId, dto);
-            return Ok(new { message = "Rating saved successfully" });
+            existingRating.Score = dto.Score;
+            existingRating.Comment = dto.Comment;
+            existingRating.CreatedAt = DateTime.UtcNow;
         }
-        catch (KeyNotFoundException)
+        else
         {
-            return NotFound("Movie not found");
+            var rating = new Rating
+            {
+                UserId = userId,
+                MovieId = dto.MovieId,
+                Score = dto.Score,
+                Comment = dto.Comment
+            };
+            _context.Ratings.Add(rating);
         }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Rating saved successfully" });
     }
 
     [HttpGet("movie/{movieId}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetRatings(int movieId)
     {
-        var ratings = await _ratingService.GetRatingsAsync(movieId);
+        var ratings = await _context.Ratings
+            .Where(r => r.MovieId == movieId)
+            .Include(r => r.User)
+            .Select(r => new
+            {
+                r.Id,
+                r.Score,
+                r.Comment,
+                r.CreatedAt,
+                UserEmail = r.User.Email
+            })
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
+
         return Ok(ratings);
     }
 
@@ -46,7 +79,18 @@ public class RatingController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetAverageRating(int movieId)
     {
-        var (averageScore, totalRatings) = await _ratingService.GetAverageAsync(movieId);
-        return Ok(new { averageScore, totalRatings });
+        var ratings = await _context.Ratings
+            .Where(r => r.MovieId == movieId)
+            .ToListAsync();
+
+        if (!ratings.Any())
+        {
+            return Ok(new { averageScore = 0, totalRatings = 0 });
+        }
+
+        var averageScore = ratings.Average(r => r.Score);
+        var totalRatings = ratings.Count;
+
+        return Ok(new { averageScore = Math.Round(averageScore, 1), totalRatings });
     }
 }

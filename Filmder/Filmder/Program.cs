@@ -58,11 +58,6 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<MovieImportService>();
-builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddScoped<IRatingService, RatingService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 
 
 builder.Services.AddSignalR();

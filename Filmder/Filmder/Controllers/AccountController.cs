@@ -7,21 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace Filmder.Controllers;
 
 [ApiController]
-public class AccountController(IAccountService accountService) : ControllerBase
+public class AccountController(UserManager<AppUser> userManager, SignInManager<AppUser>signInManager,ITokenService tokenService) : ControllerBase
 {
     [HttpPost]
     [Route("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        try
+        var user = new AppUser
         {
-            var userDto = await accountService.RegisterAsync(registerDto);
-            return userDto;
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new[] { new { Description = ex.Message } });
-        }
+            Email = registerDto.Email,
+            UserName = registerDto.Email
+        };
+       var result = await userManager.CreateAsync(user, registerDto.Password);
+       
+       if (!result.Succeeded)
+       {
+           return BadRequest(result.Errors);
+       }
+
+       return new UserDto(user.Id, user.Email!, tokenService.CreateToken(user));
 
     }
 
@@ -29,15 +33,15 @@ public class AccountController(IAccountService accountService) : ControllerBase
     [Route("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        try
+        var user = await userManager.FindByEmailAsync(loginDto.Email);
+        if (user == null)
         {
-            var user = await accountService.LoginAsync(loginDto);
-            return user;
+            return Unauthorized("Invalid email");
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(ex.Message);
-        }
+        var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+        if (!result.Succeeded) return Unauthorized("Invalid password");
+
+        return new UserDto(user.Id, user.Email!, tokenService.CreateToken(user));
         
     }
     
