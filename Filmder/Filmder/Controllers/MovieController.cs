@@ -168,6 +168,49 @@ public class MovieController : ControllerBase
 
         return Ok(new { message = $"{added} movies imported successfully." });
     }
+    
+    [HttpGet("daily")]
+    [AllowAnonymous]
+    public async Task<ActionResult<DailyMovieDto>> GetDailyMovie()
+    {
+        var today = DateTime.UtcNow.Date;
+        int seed = today.DayOfYear + today.Year;
+
+        int movieCount = await _context.Movies.CountAsync();
+        if (movieCount == 0)
+            return NotFound("No movies available.");
+
+        int index = new Random(seed).Next(movieCount);
+
+        var movie = await _context.Movies
+            .OrderBy(m => m.Id)
+            .Skip(index)
+            .Take(1)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        if (movie == null)
+            return NotFound("No movies found.");
+
+        var nextReset = today.AddDays(1);
+        var timeRemaining = nextReset - DateTime.UtcNow;
+
+        var dto = new DailyMovieDto
+        {
+            Name = movie.Name,
+            Genre = movie.Genre.ToString(),
+            Description = movie.Description,
+            PosterUrl = movie.PosterUrl ?? string.Empty,
+            TrailerUrl = movie.TrailerUrl ?? string.Empty,
+            Rating = movie.Rating,
+            ReleaseYear = movie.ReleaseYear,
+            CountdownSeconds = (int)timeRemaining.TotalSeconds,
+            NextUpdate = nextReset
+        };
+
+        return Ok(dto);
+    }
+
 
 
 
