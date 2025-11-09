@@ -16,6 +16,10 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<Game> Games { get; set; }
     public DbSet<MovieScore> MovieScores { get; set; }
     public DbSet<SwipeHistory> SwipeHistories { get; set; }
+    
+    public DbSet<SharedMovie> SharedMovies { get; set; } 
+    public DbSet<GuessRatingGame> RatingGuessingGames { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,5 +29,10 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
             .Entity<Movie>()
             .Property(m => m.Genre)
             .HasConversion<string>();
+        
+        modelBuilder.Entity<GuessRatingGame>()
+            .HasMany(g => g.Movies)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("GuessRatingGameMovies"));
     }
 }

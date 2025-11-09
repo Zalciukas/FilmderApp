@@ -85,4 +85,41 @@ public class GroupController(AppDbContext context) : ControllerBase
 
         return Ok(groups);
     }
+    
+    [HttpPost("groups/{groupId}/shared-movies/{movieId}")]
+    public async Task<IActionResult> AddToSharedMovieList(int groupId, int movieId, [FromBody] string comment)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return BadRequest();
+
+        var group = await context.Groups
+            .Include(g => g.GroupMembers)
+            .Include(g => g.GroupMovie)
+            .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        if (group == null) return BadRequest();
+
+        
+        var userIsInGroup= group.GroupMembers.Any(s => s.UserId == userId && s.GroupId == groupId);
+        if (!userIsInGroup) return Forbid();
+
+        var isAlreadyAdded = group.GroupMovie.Any(gm => gm.MovieId == movieId);
+        
+
+        var sharedMovie = new SharedMovie
+        {
+            GroupId = groupId,
+            MovieId = movieId,
+            UserWhoAddedId = userId,
+            Comment = comment
+        };
+        
+        group.GroupMovie.Add(sharedMovie);
+        await context.SaveChangesAsync();
+
+        return Ok();
+
+    }
+    
+    
 }
