@@ -21,4 +21,5 @@ public class Group
     public ICollection<AppUser> Members { get; set; } = new List<AppUser>();
     public ICollection<GroupMember> GroupMembers { get; set; } = new List<GroupMember>();
     public ICollection<Message> Messages { get; set; } = new List<Message>();
+    public ICollection<SharedMovie> GroupMovie { get; set; } = new List<SharedMovie>();
 }
