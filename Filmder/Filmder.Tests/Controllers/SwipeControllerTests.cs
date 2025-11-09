@@ -30,6 +30,17 @@ public class SwipeControllerTests
     [Fact]
     public async Task GetRandomMovie_WithGenreFilter_ReturnsFilteredMovie()
     {
-        
+        // Arrange
+        var context = TestDbContextFactory.CreateContextWithMovies();
+        var controller = new SwipeController(context);
+        MockHelpers.SetupControllerContext(controller, "user1", "test@example.com", "test");
+
+        // Act
+        var result = await controller.GetRandomMovie(genre: "SciFi");
+
+        // Assert
+        var actionResult = result.Result as OkObjectResult;
+        var movie = actionResult.Value as Movie;
+        movie.Genre.Should().Be(MovieGenre.SciFi);
     }
 }
