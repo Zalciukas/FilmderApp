@@ -11,17 +11,15 @@ namespace Filmder.Controllers;
 [ApiController]
 public class GroupStatsController : ControllerBase
 {
-
     private readonly AppDbContext _dbContext;
 
     public GroupStatsController(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-
-
+    
     [HttpGet("getPlayedGamesCount")]
-    public async Task<ActionResult<int>> TotalGamesPLayed(int groupId)
+    public async Task<ActionResult<int>> TotalGamesPlayed(int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null) return BadRequest();
@@ -69,7 +67,6 @@ public class GroupStatsController : ControllerBase
         return Ok(movieAndScore);
     }
     
-    
     [HttpGet("getHighestVotedGenre")]
     public async Task<ActionResult<HighestRatedMovieDto>> HighestVotedGenre(int groupId)
     {
@@ -94,7 +91,6 @@ public class GroupStatsController : ControllerBase
         
     }
     
-    
     [HttpGet("averageMovieScore")]
     public async Task<ActionResult<double>> GetAverageMovieScore(int groupId)
     {
@@ -112,8 +108,7 @@ public class GroupStatsController : ControllerBase
 
         return Ok(Math.Round(averageScore, 2)); 
     }
-
-
+    
     [HttpGet("averageMovieDuration")]
     public async Task<ActionResult<double>> GetAverageMovieDuration(int groupId)
     {
@@ -130,10 +125,5 @@ public class GroupStatsController : ControllerBase
         double averageDuration = await query.AverageAsync(ms => ms.Movie.Duration);
 
         return Ok(Math.Round(averageDuration, 2));
-
-
-
-
-
     }
 }

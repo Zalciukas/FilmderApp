@@ -42,12 +42,10 @@ public class GameController : ControllerBase
     [HttpPost("/vote")]
     public async Task<ActionResult> Vote(VoteDto voteDto)
     {
-
         var game = await _dbContext.Games.Include(g => g.MovieScores).FirstOrDefaultAsync(g => g.Id == voteDto.GameId);
         if (game == null)
         {
             return BadRequest();
-            
         }
 
         var movieScore = game.MovieScores.FirstOrDefault(ms => ms.MovieId == voteDto.MovieId);
@@ -68,9 +66,7 @@ public class GameController : ControllerBase
 
         await _dbContext.SaveChangesAsync();
         
-        
         return Ok();
-
     }
     
     [HttpGet("/getMoviesBy")]
@@ -103,8 +99,8 @@ public class GameController : ControllerBase
 
     
     
-     [HttpGet("/getResults{gameId}")]
-    public async Task<ActionResult<List<Movie>>> getresults(int gameId)
+     [HttpGet("/getResults/{gameId}")]
+    public async Task<ActionResult<List<Movie>>> GetResults(int gameId)
     {
         var game = await _dbContext.Games
             .Include(gm => gm.MovieScores)
@@ -125,7 +121,7 @@ public class GameController : ControllerBase
         
         topMovies.Sort();
 
-        return topMovies;
+        return Ok(topMovies);
     }
     
     [HttpPost("/endGame/{gameId}")]
@@ -158,7 +154,6 @@ public class GameController : ControllerBase
         }
 
         return Ok(game);
-        
     }
     
     
