@@ -32,15 +32,19 @@ public class GuessRatingGameController : ControllerBase
         var random = new Random(Guid.NewGuid().GetHashCode());
         int index = random.Next(movieCount);        
 
-        var movies = _dbContext.Movies
+        var movieIds = await _dbContext.Movies
             .OrderBy(m => m.Id)
             .Skip(Math.Max(0, index - 10))
             .Take(10)
-            .AsNoTracking()
-            .ToList();
+            .Select(m => m.Id)
+            .ToListAsync();
 
-        if (!movies.Any())
+        if (!movieIds.Any())
             return NotFound();
+
+        var movies = await _dbContext.Movies
+            .Where(m => movieIds.Contains(m.Id))
+            .ToListAsync();
 
         var guessRatingGame = new GuessRatingGame
         {
@@ -92,6 +96,7 @@ public class GuessRatingGameController : ControllerBase
             .Include(g => g.Movies)
             .Include(g => g.Group)
             .ThenInclude(g => g.GroupMembers)
+            .Include(g => g.Guesses)
             .FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null) return NotFound();
 

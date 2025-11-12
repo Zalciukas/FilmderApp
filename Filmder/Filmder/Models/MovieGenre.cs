@@ -17,6 +17,7 @@ public enum MovieGenre
     Horror,
     Music,
     Musical,
+    Psychological,
     Mystery,
     Romance,
     SciFi,

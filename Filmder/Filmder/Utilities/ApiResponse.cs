@@ -6,7 +6,7 @@ namespace Filmder.DTOs
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }
 
-        public ApiResponse(bool success, string message, T? data = null)
+        public ApiResponse(bool success, string message, T? data = null) 
         {
             Success = success;
             Message = message;

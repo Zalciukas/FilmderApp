@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
@@ -156,9 +157,52 @@ public class GameController : ControllerBase
         return Ok(game);
     }
     
-    
-    
-    
+
+    [HttpGet("getGameResults/{gameId}")]
+    public async Task<ActionResult> GetGameResults(int gameId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return BadRequest();
+
+        var game = await _dbContext.Games
+            .Include(g => g.MovieScores)
+            .ThenInclude(ms => ms.Movie)
+            .FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null) return NotFound("Game not found");
+
+        
+
+        var movieScores = game.MovieScores
+            .OrderByDescending(ms => ms.MovieScoreValue)
+            .Select(ms => new
+            {
+                Score = ms.MovieScoreValue,
+                Movie = new
+                {
+                    ms.Movie.Id,
+                    ms.Movie.Name,
+                    ms.Movie.Genre,
+                    ms.Movie.Description,
+                    ms.Movie.ReleaseYear,
+                    ms.Movie.Rating,
+                    ms.Movie.PosterUrl,
+                    ms.Movie.Duration,
+                    ms.Movie.Director
+                }
+            })
+            .ToList();
+
+        var gameInfo = new
+        {
+            game.Id,
+            game.Name,
+            PlayerCount = 0, 
+            game.IsActive
+        };
+
+        return Ok(new { MovieScores = movieScores, GameInfo = gameInfo });
+    }
     
     
     
