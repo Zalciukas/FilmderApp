@@ -161,20 +161,19 @@ public class GroupController(AppDbContext context) : ControllerBase
 
         var isMember = await context.GroupMembers
             .AnyAsync(gm => gm.GroupId == groupId && gm.UserId == userId);
-    
+
         if (!isMember) return Forbid();
 
         var sharedMovies = await context.SharedMovies
             .Where(sm => sm.GroupId == groupId)
             .Include(sm => sm.Movie)
-            .Include(sm => sm.User) 
             .Select(sm => new
             {
                 sm.Id,
                 sm.MovieId,
                 sm.Comment,
                 sm.AddedAt,
-                AddedBy = sm.User.UserName,  
+                AddedBy = sm.UserId,
                 Movie = new
                 {
                     sm.Movie.Id,

@@ -204,13 +204,58 @@ public class GameController : ControllerBase
         return Ok(new { MovieScores = movieScores, GameInfo = gameInfo });
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    [HttpGet("getAllGames/{groupId}")]
+    public async Task<ActionResult<List<object>>> GetAllGamesByGroup(int groupId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return BadRequest("User not authenticated");
+
+        try
+        {
+            var isMember = await _dbContext.GroupMembers
+                .AnyAsync(gm => gm.GroupId == groupId && gm.UserId == userId);
+        
+            if (!isMember) return Forbid();
+
+            var games = await _dbContext.Games
+                .Include(g => g.Users)
+                .Include(g => g.MovieScores)
+                .ThenInclude(ms => ms.Movie)
+                .Where(g => g.GroupId == groupId)
+                .OrderByDescending(g => g.Id)
+                .ToListAsync();
+
+            // Return without circular references
+            var gameList = games.Select(g => new
+            {
+                g.Id,
+                g.Name,
+                g.IsActive,
+                g.GroupId,
+                Users = g.Users.Select(u => new { u.Id, u.Email }).ToList(),
+                MovieScores = g.MovieScores.Select(ms => new
+                {
+                    ms.Id,
+                    ms.MovieId,
+                    ms.MovieScoreValue,
+                    Movie = ms.Movie == null ? null : new
+                    {
+                        ms.Movie.Id,
+                        ms.Movie.Name,
+                        ms.Movie.Genre,
+                        ms.Movie.Rating,
+                        ms.Movie.ReleaseYear,
+                        ms.Movie.PosterUrl,
+                        ms.Movie.Duration
+                    }
+                }).OrderByDescending(ms => ms.MovieScoreValue).ToList()
+            }).ToList();
+
+            return Ok(gameList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message, details = ex.InnerException?.Message });
+        }
+    }
 }
