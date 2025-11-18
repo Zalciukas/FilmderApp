@@ -111,6 +111,7 @@ public class GroupController(AppDbContext context) : ControllerBase
             GroupId = groupId,
             MovieId = movieId,
             UserWhoAddedId = userId,
+            UserId = userId, //temp fix
             Comment = comment
         };
         
@@ -119,6 +120,75 @@ public class GroupController(AppDbContext context) : ControllerBase
 
         return Ok();
 
+    }
+    
+    
+    
+    [HttpGet("{groupId}")]
+    public async Task<IActionResult> GetGroupById(int groupId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+        var group = await context.Groups
+            .Where(g => g.Id == groupId && context.GroupMembers
+                .Any(m => m.GroupId == g.Id && m.UserId == userId))
+            .Select(g => new
+            {
+                g.Id,
+                g.Name,
+                g.OwnerId,
+                MemberCount = g.GroupMembers.Count,
+                Members = g.GroupMembers.Select(m => new
+                {
+                    m.UserId,
+                    m.User.UserName,
+                    m.User.Email,
+                    m.JoinedAt
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+
+        if (group == null) return NotFound();
+
+        return Ok(group);
+    }
+    
+    [HttpGet("{groupId}/shared-movies")]
+    public async Task<IActionResult> GetSharedMovies(int groupId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return BadRequest();
+
+        var isMember = await context.GroupMembers
+            .AnyAsync(gm => gm.GroupId == groupId && gm.UserId == userId);
+    
+        if (!isMember) return Forbid();
+
+        var sharedMovies = await context.SharedMovies
+            .Where(sm => sm.GroupId == groupId)
+            .Include(sm => sm.Movie)
+            .Include(sm => sm.User) 
+            .Select(sm => new
+            {
+                sm.Id,
+                sm.MovieId,
+                sm.Comment,
+                sm.AddedAt,
+                AddedBy = sm.User.UserName,  
+                Movie = new
+                {
+                    sm.Movie.Id,
+                    sm.Movie.Name,
+                    sm.Movie.Genre,
+                    sm.Movie.ReleaseYear,
+                    sm.Movie.Rating,
+                    sm.Movie.PosterUrl,
+                    sm.Movie.Duration
+                }
+            })
+            .ToListAsync();
+
+        return Ok(sharedMovies);
     }
     
     
