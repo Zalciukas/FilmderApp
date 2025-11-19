@@ -15,11 +15,12 @@ public class MovieController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly MovieImportService _importService;
-    
-    public MovieController(AppDbContext context, MovieImportService importService)
+    private readonly IMovieCacheService _movieCache;
+    public MovieController(AppDbContext context, MovieImportService importService, IMovieCacheService movieCache)
     {
         _context = context;
         _importService = importService;
+        _movieCache = movieCache;
     }
     
     [HttpGet]
@@ -41,7 +42,7 @@ public class MovieController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<Movie>> GetMovieById(int id)
     {
-        var movie = await _context.Movies.FindAsync(id);
+        var movie = await _movieCache.GetMovieByIdAsync(id);
 
         if (movie == null)
             return NotFound($"Movie with ID {id} not found");
@@ -139,6 +140,9 @@ public class MovieController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        // Invalidate cache for this movie
+        _movieCache.InvalidateCache(id);
+
         return NoContent();
     }
     
@@ -154,6 +158,9 @@ public class MovieController : ControllerBase
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
 
+        // Invalidate cache for this movie
+        _movieCache.InvalidateCache(id);
+        
         return NoContent();
     }
     
