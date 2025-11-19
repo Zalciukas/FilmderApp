@@ -1,4 +1,5 @@
 using Filmder.DTOs;
+using Filmder.Exceptions;
 using Filmder.Models;
 using Filmder.Services;
 using Microsoft.AspNetCore.Identity;
@@ -35,15 +36,19 @@ public class AccountController(UserManager<AppUser> userManager, SignInManager<A
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         var user = await userManager.FindByEmailAsync(loginDto.Email);
+
         if (user == null)
-        {
-            return Unauthorized("Invalid email");
-        }
-        var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-        if (!result.Succeeded) return Unauthorized("Invalid password");
+            throw new LoginFailedException("User with this email does not exist.");
+
+        var result = await signInManager.CheckPasswordSignInAsync(
+            user, loginDto.Password, false
+        );
+
+        if (!result.Succeeded)
+            throw new LoginFailedException("Incorrect password.");
 
         return Ok(new UserDto(user.Id, user.Email!, tokenService.CreateToken(user)));
-        
     }
+
     
 }
