@@ -13,6 +13,7 @@ public class Game
     [Required]
     public bool IsActive { get; set; } = true;
     public int GroupId { get; set; }
+    
     public ICollection<AppUser> Users { get; set; } = new List<AppUser>();
     public ICollection<Movie> Movies { get; set; } = new List<Movie>();
     public ICollection<MovieScore> MovieScores { get; set; } = new List<MovieScore>();

@@ -1,6 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Filmder.DTOs;
 
 public class RatingGuessDto
 {
-    public int RatingGuessValue { get; set; }
+    [Required]
+    [Range(0, 10)]
+    public double RatingGuessValue { get; set; }
 }

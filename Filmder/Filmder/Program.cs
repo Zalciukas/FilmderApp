@@ -1,5 +1,6 @@
 using System.Text;
 using Filmder.Data;
+using Filmder.Middleware;
 using Filmder.Models;
 using Filmder.Services;
 using Filmder.Signal;
@@ -8,8 +9,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.File("Logs/log.txt")
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -58,7 +66,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<MovieImportService>();
-
+builder.Services.AddScoped<IMovieCacheService, MovieCacheService>();
 
 builder.Services.AddSignalR();
 
@@ -112,6 +120,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -120,6 +131,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Filmder API V1");
     });
 }
+
 
 app.UseHttpsRedirection();
 

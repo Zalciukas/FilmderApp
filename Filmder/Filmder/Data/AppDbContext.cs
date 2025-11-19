@@ -19,12 +19,13 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     
     public DbSet<SharedMovie> SharedMovies { get; set; } 
     public DbSet<GuessRatingGame> RatingGuessingGames { get; set; }
+    public DbSet<MovieRatingGuess> MovieRatingGuesses { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
         modelBuilder
             .Entity<Movie>()
             .Property(m => m.Genre)
@@ -34,5 +35,35 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
             .HasMany(g => g.Movies)
             .WithMany()
             .UsingEntity(j => j.ToTable("GuessRatingGameMovies"));
+        
+        modelBuilder.Entity<GuessRatingGame>()
+            .HasOne(g => g.Group)
+            .WithMany()
+            .HasForeignKey(g => g.GroupId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<GuessRatingGame>()
+            .HasOne(g => g.User)
+            .WithMany()
+            .HasForeignKey(g => g.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<GuessRatingGame>()
+            .HasMany(g => g.Guesses)
+            .WithOne(guess => guess.GuessRatingGame)
+            .HasForeignKey(guess => guess.GuessRatingGameId)
+            .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<MovieRatingGuess>()
+            .HasOne(g => g.User)
+            .WithMany()
+            .HasForeignKey(g => g.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<MovieRatingGuess>()
+            .HasOne(g => g.Movie)
+            .WithMany()
+            .HasForeignKey(g => g.MovieId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

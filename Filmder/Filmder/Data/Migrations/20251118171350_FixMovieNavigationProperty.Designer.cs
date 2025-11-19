@@ -3,16 +3,19 @@ using System;
 using Filmder.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Filmder.Migrations
+namespace Filmder.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251118171350_FixMovieNavigationProperty")]
+    partial class FixMovieNavigationProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -176,9 +179,6 @@ namespace Filmder.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("INTEGER");
 
@@ -291,14 +291,14 @@ namespace Filmder.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GuessRatingGameId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("RatingGuessValue")
-                        .HasColumnType("REAL");
+                    b.Property<int>("MovieId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RatingGuessValue")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -306,13 +306,13 @@ namespace Filmder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuessRatingGameId");
-
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("MovieId1");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MovieRatingGuesses");
+                    b.ToTable("MovieRatingGuess");
                 });
 
             modelBuilder.Entity("Filmder.Models.MovieScore", b =>
@@ -632,7 +632,7 @@ namespace Filmder.Migrations
                     b.HasOne("Filmder.Models.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -668,24 +668,23 @@ namespace Filmder.Migrations
 
             modelBuilder.Entity("Filmder.Models.MovieRatingGuess", b =>
                 {
-                    b.HasOne("Filmder.Models.GuessRatingGame", "GuessRatingGame")
+                    b.HasOne("Filmder.Models.GuessRatingGame", null)
                         .WithMany("Guesses")
-                        .HasForeignKey("GuessRatingGameId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Filmder.Models.Movie", "Movie")
                         .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("MovieId1")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Filmder.Models.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("GuessRatingGame");
 
                     b.Navigation("Movie");
 

@@ -13,13 +13,20 @@ namespace Filmder.Tests.Controllers;
 
 public class MovieControllerTests
 {
+    private readonly Mock<IMovieCacheService> _mockCacheService;
+
+    public MovieControllerTests()
+    {
+        _mockCacheService = new Mock<IMovieCacheService>();
+    }
+
     [Fact]
     public async Task GetAllMovies_ReturnsOkWithMovies()
     {
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetAllMovies(page: 1, pageSize: 20);
@@ -39,7 +46,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetAllMovies(page: 1, pageSize: 2);
@@ -56,7 +63,18 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        
+        var testMovie = new Movie
+        {
+            Id = 1,
+            Name = "The Matrix",
+            Genre = MovieGenre.SciFi
+        };
+        
+        _mockCacheService.Setup(x => x.GetMovieByIdAsync(1))
+            .ReturnsAsync(testMovie);
+        
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetMovieById(1);
@@ -77,7 +95,11 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        
+        _mockCacheService.Setup(x => x.GetMovieByIdAsync(999))
+            .ReturnsAsync((Movie?)null);
+        
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetMovieById(999);
@@ -93,7 +115,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.SearchMovies("Matrix");
@@ -111,7 +133,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.SearchMovies("");
@@ -127,7 +149,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetMoviesByGenre("SciFi", page: 1, pageSize: 20);
@@ -145,7 +167,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetMoviesByGenre("InvalidGenre");
@@ -161,7 +183,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateInMemoryContext();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
         MockHelpers.SetupControllerContext(controller, "user1", "test@example.com", "test");
 
         var dto = new CreateMovieDto
@@ -194,7 +216,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
         MockHelpers.SetupControllerContext(controller, "user1", "test@example.com", "test");
 
         var dto = new CreateMovieDto
@@ -218,6 +240,9 @@ public class MovieControllerTests
         var updatedMovie = await context.Movies.FindAsync(1);
         updatedMovie.Name.Should().Be("Updated Name");
         updatedMovie.Genre.Should().Be(MovieGenre.Drama);
+        
+        // Verify cache was invalidated
+        _mockCacheService.Verify(x => x.InvalidateCache(1), Times.Once);
     }
 
     [Fact]
@@ -226,7 +251,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
         MockHelpers.SetupControllerContext(controller, "user1", "test@example.com", "test");
 
         // Act
@@ -237,6 +262,9 @@ public class MovieControllerTests
         
         var deletedMovie = await context.Movies.FindAsync(1);
         deletedMovie.Should().BeNull();
+        
+        // Verify cache was invalidated
+        _mockCacheService.Verify(x => x.InvalidateCache(1), Times.Once);
     }
 
     [Fact]
@@ -245,7 +273,7 @@ public class MovieControllerTests
         // Arrange
         var context = TestDbContextFactory.CreateContextWithMovies();
         var mockImportService = new Mock<MovieImportService>(context);
-        var controller = new MovieController(context, mockImportService.Object);
+        var controller = new MovieController(context, mockImportService.Object, _mockCacheService.Object);
 
         // Act
         var result = await controller.GetDailyMovie();

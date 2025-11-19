@@ -2,13 +2,15 @@ using System.Security.Claims;
 using Filmder.Data;
 using Filmder.DTOs;
 using Filmder.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Filmder.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
+[Authorize]
 public class GroupStatsController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
@@ -18,32 +20,39 @@ public class GroupStatsController : ControllerBase
         _dbContext = dbContext;
     }
     
-    [HttpGet("getPlayedGamesCount")]
-    public async Task<ActionResult<int>> TotalGamesPlayed(int groupId)
+    [HttpGet("playedGamesCount")]
+    public async Task<ActionResult<int>> TotalGamesPlayed([FromQuery] int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null) return BadRequest();
 
-        var GroupMembers =  await _dbContext.GroupMembers.FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
-        if (GroupMembers == null) return Unauthorized();
+        var groupMember = await _dbContext.GroupMembers
+            .FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
+        
+        if (groupMember == null) return Unauthorized();
 
-        var groupGamesCount = await _dbContext.Games.Where(gm => gm.GroupId == groupId).CountAsync();
+        var groupGamesCount = await _dbContext.Games
+            .Where(gm => gm.GroupId == groupId && !gm.IsActive)
+            .CountAsync();
 
         return Ok(groupGamesCount);
     }
     
-    [HttpGet("getHighestVotedMovie")]
-    public async Task<ActionResult<HighestRatedMovieDto>> HighestVotedMovie(int groupId)
+    [HttpGet("highestVotedMovie")]
+    public async Task<ActionResult<HighestRatedMovieDto>> HighestVotedMovie([FromQuery] int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null) return BadRequest();
 
-        var GroupMembers =  await _dbContext.GroupMembers.FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
-        if (GroupMembers == null) return Unauthorized();
+        var groupMember = await _dbContext.GroupMembers
+            .FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
+        
+        if (groupMember == null) return Unauthorized();
 
         var movieAndScore = await _dbContext.MovieScores
             .Where(ms => ms.Game.IsActive == false && ms.Game.GroupId == groupId)
             .OrderByDescending(ms => ms.MovieScoreValue)
+            .Include(ms => ms.Movie)
             .Select(ms => new HighestRatedMovieDto
             {
                 Id = ms.Movie.Id,
@@ -62,22 +71,25 @@ public class GroupStatsController : ControllerBase
             })
             .FirstOrDefaultAsync();
 
-        if (movieAndScore == null) return BadRequest();
+        if (movieAndScore == null) return NotFound();
         
         return Ok(movieAndScore);
     }
     
-    [HttpGet("getHighestVotedGenre")]
-    public async Task<ActionResult<HighestRatedMovieDto>> HighestVotedGenre(int groupId)
+    [HttpGet("highestVotedGenre")]
+    public async Task<ActionResult<PopularGenreDto>> HighestVotedGenre([FromQuery] int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null) return BadRequest();
 
-        var GroupMembers =  await _dbContext.GroupMembers.FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
-        if (GroupMembers == null) return Unauthorized();
+        var groupMember = await _dbContext.GroupMembers
+            .FirstOrDefaultAsync(gm => gm.UserId == userId && gm.GroupId == groupId);
+        
+        if (groupMember == null) return Unauthorized();
 
         var mostPopular = await _dbContext.MovieScores
             .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Include(ms => ms.Movie)
             .GroupBy(ms => ms.Movie.Genre)
             .Select(g => new PopularGenreDto
             {
@@ -88,21 +100,19 @@ public class GroupStatsController : ControllerBase
             .FirstOrDefaultAsync();
 
         return mostPopular == null ? NotFound() : Ok(mostPopular);
-        
     }
     
     [HttpGet("averageMovieScore")]
-    public async Task<ActionResult<double>> GetAverageMovieScore(int groupId)
+    public async Task<ActionResult<double>> GetAverageMovieScore([FromQuery] int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return BadRequest();
+        if (userId == null) return BadRequest();
 
         var query = _dbContext.MovieScores
             .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId);
 
         if (!await query.AnyAsync())
-            return NotFound();
+            return Ok(0.0);
 
         double averageScore = await query.AverageAsync(ms => ms.MovieScoreValue);
 
@@ -110,17 +120,17 @@ public class GroupStatsController : ControllerBase
     }
     
     [HttpGet("averageMovieDuration")]
-    public async Task<ActionResult<double>> GetAverageMovieDuration(int groupId)
+    public async Task<ActionResult<double>> GetAverageMovieDuration([FromQuery] int groupId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return BadRequest("User not found.");
+        if (userId == null) return BadRequest();
 
         var query = _dbContext.MovieScores
-            .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId);
+            .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Include(ms => ms.Movie);
 
         if (!await query.AnyAsync())
-            return NotFound("No finished games found for this group.");
+            return Ok(0.0);
 
         double averageDuration = await query.AverageAsync(ms => ms.Movie.Duration);
 

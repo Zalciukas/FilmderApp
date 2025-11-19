@@ -3,16 +3,19 @@ using System;
 using Filmder.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Filmder.Migrations
+namespace Filmder.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112180105_AddGroupNavigationToGame")]
+    partial class AddGroupNavigationToGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -104,6 +107,9 @@ namespace Filmder.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("INTEGER");
 
@@ -116,6 +122,8 @@ namespace Filmder.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Games");
                 });
@@ -175,9 +183,6 @@ namespace Filmder.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("INTEGER");
@@ -297,8 +302,8 @@ namespace Filmder.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("RatingGuessValue")
-                        .HasColumnType("REAL");
+                    b.Property<int>("RatingGuessValue")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -312,7 +317,7 @@ namespace Filmder.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MovieRatingGuesses");
+                    b.ToTable("MovieRatingGuess");
                 });
 
             modelBuilder.Entity("Filmder.Models.MovieScore", b =>
@@ -591,6 +596,17 @@ namespace Filmder.Migrations
                         .HasForeignKey("GroupId");
                 });
 
+            modelBuilder.Entity("Filmder.Models.Game", b =>
+                {
+                    b.HasOne("Filmder.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("Filmder.Models.Group", b =>
                 {
                     b.HasOne("Filmder.Models.AppUser", "Owner")
@@ -632,7 +648,7 @@ namespace Filmder.Migrations
                     b.HasOne("Filmder.Models.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -668,28 +684,25 @@ namespace Filmder.Migrations
 
             modelBuilder.Entity("Filmder.Models.MovieRatingGuess", b =>
                 {
-                    b.HasOne("Filmder.Models.GuessRatingGame", "GuessRatingGame")
+                    b.HasOne("Filmder.Models.GuessRatingGame", null)
                         .WithMany("Guesses")
-                        .HasForeignKey("GuessRatingGameId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("GuessRatingGameId");
 
-                    b.HasOne("Filmder.Models.Movie", "Movie")
+                    b.HasOne("Filmder.Models.Movie", "movie")
                         .WithMany()
                         .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Filmder.Models.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GuessRatingGame");
-
-                    b.Navigation("Movie");
-
                     b.Navigation("User");
+
+                    b.Navigation("movie");
                 });
 
             modelBuilder.Entity("Filmder.Models.MovieScore", b =>
