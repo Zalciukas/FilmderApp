@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<SharedMovie> SharedMovies { get; set; } 
     public DbSet<GuessRatingGame> RatingGuessingGames { get; set; }
     public DbSet<MovieRatingGuess> MovieRatingGuesses { get; set; }
+    public DbSet<UserMovie> UserMovies { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

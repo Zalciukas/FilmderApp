@@ -496,3 +496,137 @@ System.Net.Http.HttpRequestException: Response status code does not indicate suc
 2025-11-23 15:21:11.775 +02:00 [INF] Executed action Filmder.Controllers.EmojiGameController.GetPuzzle (Filmder) in 1035.7724ms
 2025-11-23 15:21:11.775 +02:00 [INF] Executed endpoint 'Filmder.Controllers.EmojiGameController.GetPuzzle (Filmder)'
 2025-11-23 15:21:11.781 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/emoji-game/puzzle?difficulty=Hard - 200 null text/plain; charset=utf-8 1119.6636ms
+2025-11-23 16:58:10.594 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 16:58:10.603 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 404 0 null 9.23ms
+2025-11-23 16:58:10.603 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5144/api/user/profile, Response status code: 404
+2025-11-23 16:58:16.014 +02:00 [INF] Application is shutting down...
+2025-11-23 16:58:20.271 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 16:58:20.325 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 16:58:20.326 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 16:58:20.326 +02:00 [INF] Hosting environment: Development
+2025-11-23 16:58:20.326 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 16:59:22.769 +02:00 [INF] Application is shutting down...
+2025-11-23 16:59:25.374 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 16:59:25.419 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 16:59:25.420 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 16:59:25.420 +02:00 [INF] Hosting environment: Development
+2025-11-23 16:59:25.420 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 16:59:32.629 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 16:59:32.673 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-11-23 16:59:32.696 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 16:59:32.701 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 16:59:32.800 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 16:59:32.803 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.851ms.
+2025-11-23 16:59:32.812 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 16:59:32.837 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 133.836ms
+2025-11-23 16:59:32.837 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 16:59:32.839 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 400 null application/problem+json; charset=utf-8 212.3811ms
+2025-11-23 17:00:07.479 +02:00 [INF] Application is shutting down...
+2025-11-23 17:00:10.404 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 17:00:10.451 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 17:00:10.452 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 17:00:10.452 +02:00 [INF] Hosting environment: Development
+2025-11-23 17:00:10.452 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 17:00:16.545 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/profile - null null
+2025-11-23 17:00:16.597 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-11-23 17:00:16.613 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:00:16.618 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:00:16.703 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:00:16.707 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.8197ms.
+2025-11-23 17:00:16.716 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:00:16.740 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 119.9515ms
+2025-11-23 17:00:16.740 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:00:16.741 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/profile - 400 null application/problem+json; charset=utf-8 198.7635ms
+2025-11-23 17:01:43.679 +02:00 [INF] Application is shutting down...
+2025-11-23 17:01:45.977 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 17:01:46.023 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 17:01:46.024 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 17:01:46.025 +02:00 [INF] Hosting environment: Development
+2025-11-23 17:01:46.025 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 17:01:51.315 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 17:01:51.362 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-11-23 17:01:51.378 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:01:51.384 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:01:51.469 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:01:51.472 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.9282ms.
+2025-11-23 17:01:51.481 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:01:51.508 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 121.8666ms
+2025-11-23 17:01:51.508 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:01:51.510 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 400 null application/problem+json; charset=utf-8 195.9211ms
+2025-11-23 17:02:55.880 +02:00 [INF] Application is shutting down...
+2025-11-23 17:02:58.154 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 17:02:58.200 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 17:02:58.201 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 17:02:58.201 +02:00 [INF] Hosting environment: Development
+2025-11-23 17:02:58.201 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 17:02:58.867 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 17:02:58.899 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-11-23 17:02:58.913 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:02:58.917 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:02:59.004 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:02:59.007 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.8081ms.
+2025-11-23 17:02:59.016 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:02:59.041 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 121.4291ms
+2025-11-23 17:02:59.041 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:02:59.043 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 400 null application/problem+json; charset=utf-8 176.8023ms
+2025-11-23 17:03:00.063 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 17:03:00.073 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:03:00.073 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:03:00.091 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:03:00.091 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.0632ms.
+2025-11-23 17:03:00.091 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:03:00.092 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 18.2303ms
+2025-11-23 17:03:00.092 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:03:00.092 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 400 null application/problem+json; charset=utf-8 29.914ms
+2025-11-23 17:12:27.807 +02:00 [INF] Application is shutting down...
+2025-11-23 17:12:29.416 +02:00 [INF] User profile is available. Using '/Users/domasbarauskas/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-23 17:12:29.457 +02:00 [INF] Now listening on: http://localhost:5144
+2025-11-23 17:12:29.458 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 17:12:29.458 +02:00 [INF] Hosting environment: Development
+2025-11-23 17:12:29.458 +02:00 [INF] Content root path: /Users/domasbarauskas/Documents/net/psi-2025-grupinis/Filmder/Filmder
+2025-11-23 17:12:45.491 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/user/profile - null null
+2025-11-23 17:12:45.544 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-11-23 17:12:45.564 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:12:45.570 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:12:45.665 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:12:45.668 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.8106ms.
+2025-11-23 17:12:45.677 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:12:45.703 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 130.6143ms
+2025-11-23 17:12:45.703 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:12:45.704 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/user/profile - 400 null application/problem+json; charset=utf-8 214.8292ms
+2025-11-23 17:13:19.735 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger - null null
+2025-11-23 17:13:19.749 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger - 301 0 null 15.2601ms
+2025-11-23 17:13:19.752 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/index.html - null null
+2025-11-23 17:13:19.810 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/index.html - 200 null text/html;charset=utf-8 58.0984ms
+2025-11-23 17:13:19.939 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui.css - null null
+2025-11-23 17:13:19.943 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/index.css - null null
+2025-11-23 17:13:19.943 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui-bundle.js - null null
+2025-11-23 17:13:19.944 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui-standalone-preset.js - null null
+2025-11-23 17:13:19.944 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/index.js - null null
+2025-11-23 17:13:19.945 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/index.js - 200 null application/javascript;charset=utf-8 0.9068ms
+2025-11-23 17:13:19.948 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui.css - 200 23647 text/css 9.6284ms
+2025-11-23 17:13:19.948 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/index.css - 200 152 text/css 5.0647ms
+2025-11-23 17:13:19.951 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui-standalone-preset.js - 200 77352 text/javascript 6.8607ms
+2025-11-23 17:13:19.959 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/swagger-ui-bundle.js - 200 424767 text/javascript 15.8725ms
+2025-11-23 17:13:20.062 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/favicon-32x32.png - null null
+2025-11-23 17:13:20.064 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/favicon-32x32.png - 200 628 image/png 2.0156ms
+2025-11-23 17:13:20.078 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/swagger/v1/swagger.json - null null
+2025-11-23 17:13:20.203 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 125.3886ms
+2025-11-23 17:13:40.156 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/User/profile - null null
+2025-11-23 17:13:40.167 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:13:40.167 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:13:40.191 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:13:40.191 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.1697ms.
+2025-11-23 17:13:40.192 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:13:40.193 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 25.4358ms
+2025-11-23 17:13:40.193 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:13:40.193 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/User/profile - 400 null application/problem+json; charset=utf-8 36.8855ms
+2025-11-23 17:13:45.021 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5144/api/User/profile - null null
+2025-11-23 17:13:45.024 +02:00 [INF] Executing endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:13:45.024 +02:00 [INF] Route matched with {action = "ReturnLoggedInUser", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Filmder.DTOs.UserProfileDto]] ReturnLoggedInUser() on controller Filmder.Controllers.UserController (Filmder).
+2025-11-23 17:13:45.037 +02:00 [INF] Executing action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) - Validation state: "Valid"
+2025-11-23 17:13:45.037 +02:00 [INF] Executed action method Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder), returned result Microsoft.AspNetCore.Mvc.BadRequestResult in 0.0337ms.
+2025-11-23 17:13:45.037 +02:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-11-23 17:13:45.037 +02:00 [INF] Executed action Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder) in 13.2097ms
+2025-11-23 17:13:45.037 +02:00 [INF] Executed endpoint 'Filmder.Controllers.UserController.ReturnLoggedInUser (Filmder)'
+2025-11-23 17:13:45.038 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5144/api/User/profile - 400 null application/problem+json; charset=utf-8 17.0711ms
