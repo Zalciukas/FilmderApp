@@ -26,41 +26,56 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+    
         modelBuilder
             .Entity<Movie>()
             .Property(m => m.Genre)
             .HasConversion<string>();
         
+        modelBuilder.Entity<UserMovie>()
+            .HasKey(um => new { um.UserId, um.MovieId });
+    
+        modelBuilder.Entity<UserMovie>()
+            .HasOne(um => um.User)
+            .WithMany(u => u.UserMovies)
+            .HasForeignKey(um => um.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    
+        modelBuilder.Entity<UserMovie>()
+            .HasOne(um => um.Movie)
+            .WithMany(m => m.UserMovies)
+            .HasForeignKey(um => um.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
+    
         modelBuilder.Entity<GuessRatingGame>()
             .HasMany(g => g.Movies)
             .WithMany()
             .UsingEntity(j => j.ToTable("GuessRatingGameMovies"));
-        
+    
         modelBuilder.Entity<GuessRatingGame>()
             .HasOne(g => g.Group)
             .WithMany()
             .HasForeignKey(g => g.GroupId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+    
         modelBuilder.Entity<GuessRatingGame>()
             .HasOne(g => g.User)
             .WithMany()
             .HasForeignKey(g => g.UserId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+    
         modelBuilder.Entity<GuessRatingGame>()
             .HasMany(g => g.Guesses)
             .WithOne(guess => guess.GuessRatingGame)
             .HasForeignKey(guess => guess.GuessRatingGameId)
             .OnDelete(DeleteBehavior.SetNull);
-        
+    
         modelBuilder.Entity<MovieRatingGuess>()
             .HasOne(g => g.User)
             .WithMany()
             .HasForeignKey(g => g.UserId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+    
         modelBuilder.Entity<MovieRatingGuess>()
             .HasOne(g => g.Movie)
             .WithMany()
