@@ -14,8 +14,12 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .WriteTo.File("Logs/log.txt")
+    .MinimumLevel.Information()          
+    .WriteTo.Console()                   
+    .WriteTo.File(
+        "Logs/log.txt",
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+    )                                    
     .CreateLogger();
 builder.Host.UseSerilog();
 
