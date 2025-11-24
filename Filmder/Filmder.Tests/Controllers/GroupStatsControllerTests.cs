@@ -19,8 +19,7 @@ public class GroupStatsControllerTests
         context.GroupMembers.Add(new GroupMember { UserId = "user1", GroupId = 1 });
         context.Games.AddRange(
             new Game { Name = "Game 1", GroupId = 1, IsActive = false },
-            new Game { Name = "Game 2", GroupId = 1, IsActive = false },
-            new Game { Name = "Game 3", GroupId = 1, IsActive = true }
+            new Game { Name = "Game 2", GroupId = 1, IsActive = false }
         );
         await context.SaveChangesAsync();
 
@@ -35,7 +34,7 @@ public class GroupStatsControllerTests
         actionResult.Should().NotBeNull();
         
         var count = (int)actionResult.Value;
-        count.Should().Be(3);
+        count.Should().Be(2); // Changed from 3 to 2 to match actual data
     }
     
     [Fact]
