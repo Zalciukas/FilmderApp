@@ -14,6 +14,8 @@ namespace Filmder.Models
         
         public string? ProfilePictureUrl { get; set; }
 
+        public ICollection<UserMovie> UserMovies { get; set; } = new List<UserMovie>();
+
         
        // public ICollection<Group> Groups { get; set; } = new List<Group>();
     }

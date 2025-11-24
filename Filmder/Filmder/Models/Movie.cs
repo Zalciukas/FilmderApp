@@ -38,6 +38,8 @@ namespace Filmder.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public MovieDuration GetFormattedDuration() => new MovieDuration(Duration);
         
+        public ICollection<UserMovie> UserMovies { get; set; } = new List<UserMovie>();
+        
         public int CompareTo(Movie? other)
         {
             if (other == null) return 1;
