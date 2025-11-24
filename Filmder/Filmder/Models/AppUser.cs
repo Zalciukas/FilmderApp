@@ -12,6 +12,9 @@ namespace Filmder.Models
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
+        public string? ProfilePictureUrl { get; set; }
+
+        
        // public ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 }
