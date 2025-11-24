@@ -16,11 +16,13 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<Game> Games { get; set; }
     public DbSet<MovieScore> MovieScores { get; set; }
     public DbSet<SwipeHistory> SwipeHistories { get; set; }
-    
     public DbSet<SharedMovie> SharedMovies { get; set; } 
     public DbSet<GuessRatingGame> RatingGuessingGames { get; set; }
     public DbSet<MovieRatingGuess> MovieRatingGuesses { get; set; }
     public DbSet<UserMovie> UserMovies { get; set; }
+    public DbSet<PersonalityQuestion> PersonalityQuestions { get; set; }
+    public DbSet<PersonalityAnswer> PersonalityAnswers { get; set; }
+    public DbSet<PersonalityMatchResult> PersonalityMatchResults { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -81,5 +83,23 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
             .WithMany()
             .HasForeignKey(g => g.MovieId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<PersonalityQuestion>()
+            .HasMany(pq => pq.Answers)
+            .WithOne(pa => pa.Question)
+            .HasForeignKey(pa => pa.QuestionId)
+            .OnDelete(DeleteBehavior.Cascade);
+    
+        modelBuilder.Entity<PersonalityAnswer>()
+            .HasOne(pa => pa.User)
+            .WithMany()
+            .HasForeignKey(pa => pa.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    
+        modelBuilder.Entity<PersonalityMatchResult>()
+            .HasOne(pmr => pmr.User)
+            .WithMany()
+            .HasForeignKey(pmr => pmr.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

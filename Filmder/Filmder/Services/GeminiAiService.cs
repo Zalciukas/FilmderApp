@@ -64,7 +64,7 @@ public class GeminiAiService : IAIService
 
     public Task<string> EmojiSequence(Difficulty difficulty)
     {
-                string prompt = $@"
+        string prompt = $@"
         You are generating content for a movie-guessing game.
 
         THE GAME:
@@ -122,6 +122,102 @@ public class GeminiAiService : IAIService
         return GenerateText(prompt);
     }
 
+    public async Task<PersonalityMatchResultDto> MatchPersonalityToCharacters(PersonalityQuizSubmissionDto submission)
+    {
+        var answersText = string.Join("\n", submission.Answers.Select((a, i) => 
+            $"Question {a.QuestionId}: {a.Answer}"));
+
+        string prompt = $@"
+        You are a personality analyzer that matches users to movie/TV characters based on their quiz answers.
+
+        USER'S QUIZ ANSWERS:
+        {answersText}
+
+        YOUR TASK:
+        1. FOCUS ON GIVING CHARACTERS FROM KNOWN MOVIES, DONT GIVE CHARACTERS FROM VERY OLD MOVIES. THE MOVIES OR TV SHOWS HAVE TO BE POPULAR   
+        2. Analyze the personality traits revealed by these answers
+        3. Match the user to exactly 3 movie or TV series characters
+        4. Calculate a match percentage (60-99%) for each character
+        5. Provide a brief explanation for each match
+        6. Find a real image URL for each character from popular sources
+        7. Create a short personality profile summary
+
+        MATCHING CRITERIA:
+        - Consider values, decision-making style, social preferences, conflict handling, and life outlook
+        - Choose characters from popular movies and TV series that users would recognize
+        - Match percentages should be realistic (60-99%, with the best match being highest)
+        - Explanations should reference specific traits from the quiz answers
+
+        IMAGE URL REQUIREMENTS:
+        - Provide real, working image URLs for each character
+        - Use high-quality promotional images or official posters
+        - Prefer URLs from TMDB, IMDb, or official movie databases
+        - Format: https://image.tmdb.org/t/p/w500/[image-path] or similar
+        - If no real URL available, use placeholder: https://via.placeholder.com/300x450?text=[CharacterName]
+
+        JSON FORMAT (MANDATORY):
+        {{
+          ""matches"": [
+            {{
+              ""characterName"": ""Character Name"",
+              ""movieOrSeries"": ""Movie/Series Title"",
+              ""matchPercentage"": 85,
+              ""explanation"": ""Brief explanation of why this character matches the user's personality"",
+              ""imageUrl"": ""https://image.tmdb.org/t/p/w500/characterimage.jpg""
+            }},
+            {{
+              ""characterName"": ""Character Name 2"",
+              ""movieOrSeries"": ""Movie/Series Title 2"",
+              ""matchPercentage"": 78,
+              ""explanation"": ""Brief explanation for second match"",
+              ""imageUrl"": ""https://image.tmdb.org/t/p/w500/characterimage2.jpg""
+            }},
+            {{
+              ""characterName"": ""Character Name 3"",
+              ""movieOrSeries"": ""Movie/Series Title 3"",
+              ""matchPercentage"": 72,
+              ""explanation"": ""Brief explanation for third match"",
+              ""imageUrl"": ""https://image.tmdb.org/t/p/w500/characterimage3.jpg""
+            }}
+          ],
+          ""personalityProfile"": ""A concise 2-3 sentence summary of the user's personality based on their answers""
+        }}
+
+        OUTPUT RULES (ABSOLUTELY REQUIRED):
+        - Output ONLY valid JSON
+        - Do NOT wrap JSON in ``` or ```json
+        - No markdown formatting
+        - No extra text before or after the JSON
+        - No explanations outside the JSON
+        - No comments
+        - Match percentages must be integers between 60-99
+        - Order matches from highest to lowest percentage
+        - ImageUrl must be a valid URL or placeholder
+
+        Now analyze the personality and provide matches.
+        ";
+
+        string raw = await GenerateText(prompt);
+        
+        var settings = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        try
+        {
+            var result = JsonSerializer.Deserialize<PersonalityMatchResultDto>(raw, settings);
+            return result ?? new PersonalityMatchResultDto();
+        }
+        catch (JsonException)
+        {
+            return new PersonalityMatchResultDto
+            {
+                PersonalityProfile = "Unable to analyze personality at this time.",
+                Matches = new List<CharacterMatchDto>()
+            };
+        }
+    }
 
  
     private EmojiPuzzleDto ParseMovieJson(string json)
