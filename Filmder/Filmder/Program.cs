@@ -68,6 +68,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddSingleton<IAIService, GeminiAiService>();
+builder.Services.AddSingleton<TmdbApiService>();
 
 
 builder.Services.AddScoped<ITokenService, TokenService>();
