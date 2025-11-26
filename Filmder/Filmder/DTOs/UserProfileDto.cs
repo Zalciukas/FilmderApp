@@ -1,10 +1,12 @@
-using Filmder.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Filmder.DTOs;
 
 public class UserProfileDto
 {
-    public string Username { get; set; }
-    public string Email { get; set; }
+    [Required]
+    public required string Username { get; set; }
+    [Required]
+    public required string Email { get; set; }
     public string? ProfilePictureUrl { get; set; }
 }
