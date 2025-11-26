@@ -35,9 +35,9 @@ public class GameControllerTests
 
         var createDto = new CreateGameDto
         {
-            Name = "Friday Movie Night",
+            name = "Friday Movie Night",
             UserEmails = new List<string> { "test1@example.com", "test2@example.com" },
-            GroupId = 1,
+            groupId = 1,
             Movies = new List<Movie>(),
             MovieScores = new List<MovieScore>()
         };
