@@ -27,9 +27,9 @@ public class GameController : ControllerBase
         var users =  _dbContext.Users.Where(usr => createGameDto.UserEmails.Contains(usr.Email)).ToList();
         var game = new Game
         {
-            Name = createGameDto.Name,
+            Name = createGameDto.name,
             Users = users,
-            GroupId = createGameDto.GroupId,
+            GroupId = createGameDto.groupId,
             Movies = createGameDto.Movies,
             MovieScores = createGameDto.MovieScores
         };
