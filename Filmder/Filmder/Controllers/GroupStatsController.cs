@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Filmder.Data;
 using Filmder.DTOs;
-using Filmder.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -50,23 +49,24 @@ public class GroupStatsController : ControllerBase
         if (groupMember == null) return Unauthorized();
 
         var movieAndScore = await _dbContext.MovieScores
-            .Where(ms => ms.Game.IsActive == false && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Game != null && !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Movie != null)
             .OrderByDescending(ms => ms.MovieScoreValue)
             .Include(ms => ms.Movie)
             .Select(ms => new HighestRatedMovieDto
             {
-                Id = ms.Movie.Id,
-                Name = ms.Movie.Name,
-                Genre = ms.Movie.Genre.ToString(),
-                Description = ms.Movie.Description,
-                ReleaseYear = ms.Movie.ReleaseYear,
-                Rating = ms.Movie.Rating,
-                PosterUrl = ms.Movie.PosterUrl ?? string.Empty,
-                TrailerUrl = ms.Movie.TrailerUrl ?? string.Empty,
-                Duration = ms.Movie.Duration,
-                Director = ms.Movie.Director,
-                Cast = ms.Movie.Cast,
-                CreatedAt = ms.Movie.CreatedAt,
+                Id = ms.Movie!.Id,
+                Name = ms.Movie!.Name,
+                Genre = ms.Movie!.Genre.ToString(),
+                Description = ms.Movie!.Description,
+                ReleaseYear = ms.Movie!.ReleaseYear,
+                Rating = ms.Movie!.Rating,
+                PosterUrl = ms.Movie!.PosterUrl ?? string.Empty,
+                TrailerUrl = ms.Movie!.TrailerUrl ?? string.Empty,
+                Duration = ms.Movie!.Duration,
+                Director = ms.Movie!.Director,
+                Cast = ms.Movie!.Cast,
+                CreatedAt = ms.Movie!.CreatedAt,
                 Score = ms.MovieScoreValue
             })
             .FirstOrDefaultAsync();
@@ -88,9 +88,10 @@ public class GroupStatsController : ControllerBase
         if (groupMember == null) return Unauthorized();
 
         var mostPopular = await _dbContext.MovieScores
-            .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Game != null && !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Movie != null)
             .Include(ms => ms.Movie)
-            .GroupBy(ms => ms.Movie.Genre)
+            .GroupBy(ms => ms.Movie!.Genre)
             .Select(g => new PopularGenreDto
             {
                 Genre = g.Key.ToString(),
@@ -109,7 +110,7 @@ public class GroupStatsController : ControllerBase
         if (userId == null) return BadRequest();
 
         var query = _dbContext.MovieScores
-            .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId);
+            .Where(ms => ms.Game != null && !ms.Game.IsActive && ms.Game.GroupId == groupId);
 
         if (!await query.AnyAsync())
             return Ok(0.0);
@@ -126,13 +127,14 @@ public class GroupStatsController : ControllerBase
         if (userId == null) return BadRequest();
 
         var query = _dbContext.MovieScores
-            .Where(ms => !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Game != null && !ms.Game.IsActive && ms.Game.GroupId == groupId)
+            .Where(ms => ms.Movie != null)
             .Include(ms => ms.Movie);
 
         if (!await query.AnyAsync())
             return Ok(0.0);
 
-        double averageDuration = await query.AverageAsync(ms => ms.Movie.Duration);
+        double averageDuration = await query.AverageAsync(ms => ms.Movie!.Duration);
 
         return Ok(Math.Round(averageDuration, 2));
     }

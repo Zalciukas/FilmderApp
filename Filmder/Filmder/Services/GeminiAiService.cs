@@ -1,5 +1,3 @@
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
 using Filmder.DTOs;
 using Filmder.Models;
@@ -14,7 +12,7 @@ public class GeminiAiService : IAIService
     public GeminiAiService(IConfiguration config)
     {
         _http = new HttpClient();
-        _apiKey = config["Gemini:ApiKey"];
+        _apiKey = config["Gemini:ApiKey"] ?? throw new Exception("API Key is missing");
     }
 
    
@@ -392,8 +390,7 @@ public async Task<PersonalityMatchResultDto> MatchPersonalityToCharacters(Person
     }
 }
 
- 
-    private EmojiPuzzleDto ParseMovieJson(string json)
+    private EmojiPuzzleDto? ParseMovieJson(string json)
     {
         var settings = new JsonSerializerOptions
         {
@@ -402,15 +399,13 @@ public async Task<PersonalityMatchResultDto> MatchPersonalityToCharacters(Person
 
         return JsonSerializer.Deserialize<EmojiPuzzleDto>(json, settings);
     }
-
- 
-    public async Task<EmojiPuzzleDto> EmojiSequenceParsed(Difficulty difficulty)
+    
+    public async Task<EmojiPuzzleDto?> EmojiSequenceParsed(Difficulty difficulty)
     {
         string raw = await EmojiSequence(difficulty);
         return ParseMovieJson(raw);
     }
 }
-
 
 public class GeminiResponse
 {
