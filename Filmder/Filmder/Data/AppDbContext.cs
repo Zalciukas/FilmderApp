@@ -23,6 +23,8 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<PersonalityQuestion> PersonalityQuestions { get; set; }
     public DbSet<PersonalityAnswer> PersonalityAnswers { get; set; }
     public DbSet<PersonalityMatchResult> PersonalityMatchResults { get; set; }
+    public DbSet<HigherLowerGame> HigherLowerGames { get; set; }
+    public DbSet<HigherLowerGuess> HigherLowerGuesses { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -101,5 +103,41 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
             .WithMany()
             .HasForeignKey(pmr => pmr.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<HigherLowerGame>()
+            .HasOne(g => g.User)
+            .WithMany()
+            .HasForeignKey(g => g.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<HigherLowerGame>()
+            .HasOne(g => g.CurrentMovie)
+            .WithMany()
+            .HasForeignKey(g => g.CurrentMovieId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<HigherLowerGame>()
+            .HasOne(g => g.NextMovie)
+            .WithMany()
+            .HasForeignKey(g => g.NextMovieId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<HigherLowerGuess>()
+            .HasOne(g => g.Game)
+            .WithMany(g => g.Guesses)
+            .HasForeignKey(g => g.GameId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<HigherLowerGuess>()
+            .HasOne(g => g.Movie1)
+            .WithMany()
+            .HasForeignKey(g => g.Movie1Id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<HigherLowerGuess>()
+            .HasOne(g => g.Movie2)
+            .WithMany()
+            .HasForeignKey(g => g.Movie2Id)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
