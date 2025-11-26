@@ -7,7 +7,7 @@ public class MovieRatingGuess
     public int Id { get; set; }
     
     [Required]
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     
     public AppUser User { get; set; }
     
@@ -22,5 +22,5 @@ public class MovieRatingGuess
     
     public int? GuessRatingGameId { get; set; }
     
-    public GuessRatingGame GuessRatingGame { get; set; }
+    public GuessRatingGame? GuessRatingGame { get; set; }
 }

@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Filmder.DTOs;
 
 public class LoginDto
 {
-    public String Email { get; set; }
-    public String Password { get; set; }
+    [Required]
+    public required string Email { get; set; }
+    [Required]
+    public required string Password { get; set; }
 }
