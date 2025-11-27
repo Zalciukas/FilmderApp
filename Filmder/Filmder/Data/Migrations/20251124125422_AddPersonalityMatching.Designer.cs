@@ -3,16 +3,19 @@ using System;
 using Filmder.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Filmder.Migrations
+namespace Filmder.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124125422_AddPersonalityMatching")]
+    partial class AddPersonalityMatching
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -199,84 +202,6 @@ namespace Filmder.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RatingGuessingGames");
-                });
-
-            modelBuilder.Entity("Filmder.Models.HigherLowerGame", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BestStreak")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CurrentMovieId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CurrentStreak")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("EndedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("NextMovieId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("StartedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrentMovieId");
-
-                    b.HasIndex("NextMovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HigherLowerGames");
-                });
-
-            modelBuilder.Entity("Filmder.Models.HigherLowerGuess", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("GuessedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GuessedHigher")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Movie1Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Movie2Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("WasCorrect")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("Movie1Id");
-
-                    b.HasIndex("Movie2Id");
-
-                    b.ToTable("HigherLowerGuesses");
                 });
 
             modelBuilder.Entity("Filmder.Models.Message", b =>
@@ -567,7 +492,7 @@ namespace Filmder.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Comment")
-                        .HasMaxLength(200)
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("GroupId")
@@ -847,58 +772,6 @@ namespace Filmder.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Filmder.Models.HigherLowerGame", b =>
-                {
-                    b.HasOne("Filmder.Models.Movie", "CurrentMovie")
-                        .WithMany()
-                        .HasForeignKey("CurrentMovieId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Filmder.Models.Movie", "NextMovie")
-                        .WithMany()
-                        .HasForeignKey("NextMovieId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Filmder.Models.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CurrentMovie");
-
-                    b.Navigation("NextMovie");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Filmder.Models.HigherLowerGuess", b =>
-                {
-                    b.HasOne("Filmder.Models.HigherLowerGame", "Game")
-                        .WithMany("Guesses")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Filmder.Models.Movie", "Movie1")
-                        .WithMany()
-                        .HasForeignKey("Movie1Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Filmder.Models.Movie", "Movie2")
-                        .WithMany()
-                        .HasForeignKey("Movie2Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("Movie1");
-
-                    b.Navigation("Movie2");
                 });
 
             modelBuilder.Entity("Filmder.Models.Message", b =>
@@ -1182,11 +1055,6 @@ namespace Filmder.Migrations
                 });
 
             modelBuilder.Entity("Filmder.Models.GuessRatingGame", b =>
-                {
-                    b.Navigation("Guesses");
-                });
-
-            modelBuilder.Entity("Filmder.Models.HigherLowerGame", b =>
                 {
                     b.Navigation("Guesses");
                 });

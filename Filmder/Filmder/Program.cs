@@ -14,8 +14,12 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .WriteTo.File("Logs/log.txt")
+    .MinimumLevel.Information()          
+    .WriteTo.Console()                   
+    .WriteTo.File(
+        "Logs/log.txt",
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+    )                                    
     .CreateLogger();
 builder.Host.UseSerilog();
 
@@ -63,6 +67,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddSingleton<IAIService, GeminiAiService>();
+builder.Services.AddSingleton<TmdbApiService>();
+
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<MovieImportService>();

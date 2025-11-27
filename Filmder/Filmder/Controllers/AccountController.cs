@@ -49,6 +49,5 @@ public class AccountController(UserManager<AppUser> userManager, SignInManager<A
 
         return Ok(new UserDto(user.Id, user.Email!, tokenService.CreateToken(user)));
     }
-
     
 }

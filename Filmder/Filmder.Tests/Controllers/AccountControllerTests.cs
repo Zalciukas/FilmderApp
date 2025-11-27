@@ -125,7 +125,7 @@ public class AccountControllerTests
     }
     
     [Fact]
-    public async Task Login_UserNotFound_ReturnsUnauthorized()
+    public async Task Login_UserNotFound_ThrowsLoginFailedException()
     {
         // Arrange
         var loginDto = new LoginDto
@@ -137,17 +137,16 @@ public class AccountControllerTests
         _mockUserManager.Setup(x => x.FindByEmailAsync(loginDto.Email))
             .ReturnsAsync((AppUser)null);
 
-        // Act
-        var result = await _controller.Login(loginDto);
-
-        // Assert
-        var actionResult = result.Result as UnauthorizedObjectResult;
-        actionResult.Should().NotBeNull();
-        actionResult.Value.Should().Be("Invalid email");
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Filmder.Exceptions.LoginFailedException>(
+            async () => await _controller.Login(loginDto)
+        );
+        
+        exception.Message.Should().Be("User with this email does not exist.");
     }
 
     [Fact]
-    public async Task Login_InvalidPassword_ReturnsUnauthorizes()
+    public async Task Login_InvalidPassword_ThrowsLoginFailedException()
     {
         //Arrange
         var loginDto = new LoginDto
@@ -169,12 +168,11 @@ public class AccountControllerTests
         _mockSignInManager.Setup(x => x.CheckPasswordSignInAsync(user, loginDto.Password, false))
             .ReturnsAsync(Microsoft.AspNetCore.Identity.SignInResult.Failed);
         
-        // Act
-        var result = await _controller.Login(loginDto);
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<Filmder.Exceptions.LoginFailedException>(
+            async () => await _controller.Login(loginDto)
+        );
         
-        // Assert
-        var actionResult = result.Result as UnauthorizedObjectResult;
-        actionResult.Should().NotBeNull();
-        actionResult.Value.Should().Be("Invalid password");
+        exception.Message.Should().Be("Incorrect password.");
     }
 }
